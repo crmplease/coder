@@ -2,7 +2,12 @@ services:
   _defaults:
     autowire: true
 
+  CrmPlease\Coder\Helper\AddToArrayByKeyHelper: null
   CrmPlease\Coder\Helper\AddToArrayByOrderHelper: null
+  CrmPlease\Coder\Helper\CheckMethodHelper: null
+  CrmPlease\Coder\Helper\ConvertToAstHelper: null
+  CrmPlease\Coder\Helper\GetNodeArrayHelper: null
+  CrmPlease\Coder\Helper\NameNodeHelper: null
 
   CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector:
     calls:
@@ -27,6 +32,30 @@ services:
       - method: setConstant
         arguments:
           - 'CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector::class'
+
+  CrmPlease\Coder\Rector\AddToReturnArrayByKeyRector:
+    calls:
+      - method: setMethod
+        arguments:
+          - 'getArrayByKey'
+      - method: setKeyConstant
+        arguments:
+          - 'CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector::class'
+      - method: setValue
+        arguments:
+          - 'newValue'
+
+  CrmPlease\Coder\Rector\AddToPropertyArrayByKeyRector:
+    calls:
+      - method: setProperty
+        arguments:
+          - 'arrayByKey'
+      - method: setKeyConstant
+        arguments:
+          - 'CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector::class'
+      - method: setValue
+        arguments:
+          - 'newValue'
 
 parameters:
   auto_import_names: true

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace CrmPlease\Coder\Rector;
 
-use CrmPlease\Coder\Helper\AddToArrayByOrderHelper;
+use CrmPlease\Coder\Helper\AddToArrayByKeyHelper;
 use CrmPlease\Coder\Helper\CheckMethodHelper;
 use CrmPlease\Coder\Helper\GetNodeArrayHelper;
 use PhpParser\Node;
@@ -15,24 +15,26 @@ use Rector\RectorDefinition\RectorDefinition;
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
-class AddToReturnArrayByOrderRector extends AbstractRector
+class AddToReturnArrayByKeyRector extends AbstractRector
 {
     private $checkMethodHelper;
     private $getNodeArrayHelper;
-    private $addToArrayByOrderHelper;
+    private $addToArrayByKeyHelper;
     private $method = '';
+    private $key;
+    private $keyConstant;
     private $value;
     private $constant = '';
 
     public function __construct(
         CheckMethodHelper $checkMethodHelper,
         GetNodeArrayHelper $getNodeArrayHelper,
-        AddToArrayByOrderHelper $addToArrayByOrderHelper
+        AddToArrayByKeyHelper $addToArrayByKeyHelper
     )
     {
         $this->checkMethodHelper = $checkMethodHelper;
         $this->getNodeArrayHelper = $getNodeArrayHelper;
-        $this->addToArrayByOrderHelper = $addToArrayByOrderHelper;
+        $this->addToArrayByKeyHelper = $addToArrayByKeyHelper;
     }
 
     /**
@@ -47,12 +49,46 @@ class AddToReturnArrayByOrderRector extends AbstractRector
     }
 
     /**
+     * @param string|int $key
+     *
+     * @return $this
+     * @throws RectorException
+     */
+    public function setKey($key): self
+    {
+        if ($this->keyConstant) {
+            throw new RectorException('You should provide only key or only keyConstant to AddToReturnArrayByKeyRector');
+        }
+        $this->key = $key;
+        return $this;
+    }
+
+    /**
+     * @param string $keyConstant
+     *
+     * @return $this
+     * @throws RectorException
+     */
+    public function setKeyConstant(string $keyConstant): self
+    {
+        if ($this->key) {
+            throw new RectorException('You should provide only key or only keyConstant to AddToReturnArrayByKeyRector');
+        }
+        $this->keyConstant = $keyConstant;
+        return $this;
+    }
+
+    /**
      * @param string|float|int $value
      *
      * @return $this
+     * @throws RectorException
      */
     public function setValue($value): self
     {
+        if ($this->constant) {
+            throw new RectorException('You should provide only value or only constant to AddToReturnArrayByKeyRector');
+        }
         $this->value = $value;
         return $this;
     }
@@ -61,16 +97,20 @@ class AddToReturnArrayByOrderRector extends AbstractRector
      * @param string $constant
      *
      * @return $this
+     * @throws RectorException
      */
     public function setConstant(string $constant): self
     {
+        if ($this->value) {
+            throw new RectorException('You should provide only value or only constant to AddToReturnArrayByKeyRector');
+        }
         $this->constant = $constant;
         return $this;
     }
 
     public function getDefinition(): RectorDefinition
     {
-        return new RectorDefinition('Add to method "getArray" to return array value "newValue" with check duplicates', [
+        return new RectorDefinition('Add to method "getArray" to return array value "newValue" by "newKey" with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass
@@ -78,7 +118,7 @@ class SomeClass
     public function getArray()
     {
         return [
-            'existsValue',
+            'existsKey' => 'existsValue',
         ];
     }
 }
@@ -90,8 +130,8 @@ class SomeClass
     public function getArray()
     {
         return [
-            'existsValue',
-            'newValue',
+            'existsKey' => 'existsValue',
+            'newKey' => 'newValue',
         ];
     }
 }
@@ -120,8 +160,14 @@ PHP
             return null;
         }
 
-        $nodeArray = $this->getNodeArrayHelper->getFromReturnStatement($node);
-        $result = $this->addToArrayByOrderHelper->addToArrayByOrder($this->value, $this->constant, $nodeArray);
+        $arrayNode = $this->getNodeArrayHelper->getFromReturnStatement($node);
+        $result = $this->addToArrayByKeyHelper->addToArrayByKey(
+            $this->key,
+            $this->keyConstant,
+            $this->value,
+            $this->constant,
+            $arrayNode
+        );
         return $result ? $node : null;
     }
 }

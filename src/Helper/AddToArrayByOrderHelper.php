@@ -8,34 +8,36 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use function explode;
 use function get_class;
-use function gettype;
-use function implode;
 use function in_array;
-use function is_float;
-use function is_int;
-use function is_string;
-use function strpos;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
 class AddToArrayByOrderHelper
 {
+    private $convertToAstHelper;
+    private $nameNodeHelper;
+
+    public function __construct(ConvertToAstHelper $convertToAstHelper, NameNodeHelper $nameNodeHelper)
+    {
+        $this->convertToAstHelper = $convertToAstHelper;
+        $this->nameNodeHelper = $nameNodeHelper;
+    }
+
     /**
      * @param string|float|int $value
      * @param string $constant
      * @param Array_ $node
      *
+     * @return bool
      * @throws RectorException
      */
-    public function arrayToArrayByOrder($value, string $constant, Array_ $node): void
+    public function addToArrayByOrder($value, string $constant, Array_ $node): bool
     {
         $values = [];
         $constants = [];
@@ -51,49 +53,29 @@ class AddToArrayByOrderHelper
             } elseif ($valueNode instanceof String_) {
                 $values[] = (string)$valueNode->value;
             } elseif ($valueNode instanceof ConstFetch) {
-                $constants[] = $this->getNameByNodeName($valueNode->name);
+                $constants[] = $this->nameNodeHelper->getNameByNodeName($valueNode->name);
             } elseif ($valueNode instanceof ClassConstFetch) {
                 $classNode = $valueNode->class;
                 if (!$classNode instanceof Name) {
                     throw new RectorException("Can't get class name from class const value, class class '" . get_class($valueNode->class) . "' isn't supported");
                 }
-                $className = $this->getNameByNodeName($classNode);
+                $className = $this->nameNodeHelper->getNameByNodeName($classNode);
                 $constants[] = "{$className}::{$valueNode->name->name}";
             } else {
                 throw new RectorException("Can't get value from value node, class '" . get_class($valueNode) . "' isn't supported");
             }
         }
 
+        $isChanged = false;
         if ($value && !in_array((string)$value, $values, true)) {
-            if (is_int($value)) {
-                $node->items[] = new LNumber($value, ['kind' => LNumber::KIND_DEC]);
-            } elseif (is_float($value)) {
-                $node->items[] = new DNumber($value);
-            } elseif (is_string($value)) {
-                $node->items[] = new String_($value, ['kind' => String_::KIND_SINGLE_QUOTED]);
-            } else {
-                throw new RectorException("Value type '" . gettype($value) . "' isn't supported");
-            }
+            $node->items[] = new ArrayItem($this->convertToAstHelper->valueToAst($value));
+            $isChanged = true;
         }
 
         if ($constant && !in_array($constant, $constants, true)) {
-            if (strpos($constant, '::') !== false) {
-                [$className, $constant] = explode('::', $constant);
-                $node->items[] = new ClassConstFetch($this->createNodeName($className), new Identifier($constant));
-            } else {
-                $node->items[] = new ConstFetch($this->createNodeName($constant));
-            }
+            $node->items[] = new ArrayItem($this->convertToAstHelper->constantToAst($constant));
+            $isChanged = true;
         }
-    }
-
-    protected function getNameByNodeName(Name $node) : string
-    {
-        return implode('\\', $node->parts);
-    }
-
-    protected function createNodeName(string $name): Name
-    {
-        $parts = explode('\\', $name);
-        return new Name($parts);
+        return $isChanged;
     }
 }
