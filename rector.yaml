@@ -1,0 +1,18 @@
+services:
+  _defaults:
+    autowire: true
+
+  CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector:
+    calls:
+      - method: setMethod
+        arguments:
+          - 'getArray'
+      - method: setValue
+        arguments:
+          - 'newValue'
+      - method: setConstant
+        arguments:
+          - 'CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector::class'
+
+parameters:
+  auto_import_names: true
