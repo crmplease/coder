@@ -6,9 +6,7 @@ namespace CrmPlease\Coder\Rector;
 use CrmPlease\Coder\Helper\AddToArrayByOrderHelper;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Return_;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\Rector\AbstractRector;
 use Rector\RectorDefinition\CodeSample;
 use Rector\RectorDefinition\RectorDefinition;
@@ -17,10 +15,10 @@ use function get_class;
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
-class AddToReturnArrayByOrderRector extends AbstractRector
+class AddToPropertyArrayByOrderRector extends AbstractRector
 {
     private $addToArrayByOrderHelper;
-    private $method = '';
+    private $property = '';
     private $value;
     private $constant = '';
 
@@ -30,13 +28,13 @@ class AddToReturnArrayByOrderRector extends AbstractRector
     }
 
     /**
-     * @param string $method
+     * @param string $property
      *
      * @return $this
      */
-    public function setMethod(string $method): self
+    public function setProperty(string $property): self
     {
-        $this->method = $method;
+        $this->property = $property;
         return $this;
     }
 
@@ -64,30 +62,24 @@ class AddToReturnArrayByOrderRector extends AbstractRector
 
     public function getDefinition(): RectorDefinition
     {
-        return new RectorDefinition('Add to method "getArray" to return array value "newValue" with check duplicates', [
+        return new RectorDefinition('Add to property "array" value "newValue" with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass
 {
-    public function getArray()
-    {
-        return [
-            'existsValue',
-        ];
-    }
+    protected $array = [
+        'existsValue',
+    ];
 }
 PHP
                 ,
                 <<<'PHP'
 class SomeClass
 {
-    public function getArray()
-    {
-        return [
-            'existsValue',
-            'newValue',
-        ];
-    }
+    protected $array = [
+        'existsValue',
+        'newValue',
+    ];
 }
 PHP
             ),
@@ -96,7 +88,7 @@ PHP
 
     public function getNodeTypes(): array
     {
-        return [Return_::class];
+        return [PropertyProperty::class];
     }
 
     /**
@@ -107,28 +99,26 @@ PHP
      */
     public function refactor(Node $node): ?Node
     {
-        if (!$node instanceof Return_) {
-            return null;
-        }
-        $methodNode = $node->getAttribute(AttributeKey::METHOD_NODE);
-        if (!$methodNode instanceof ClassMethod) {
-            return null;
-        }
-        if ($methodNode->name->name !== $this->method) {
+        if (!$node instanceof PropertyProperty) {
             return null;
         }
 
-        $nodeArray = $node->expr;
-        if (!$nodeArray) {
-            throw new RectorException("Method {$this->method} return statement is without value");
+        if ($node->name->name !== $this->property) {
+            return null;
         }
 
-        if (!$nodeArray instanceof Array_) {
-            throw new RectorException("Method {$this->method} return value isn't array, node class: " . get_class($nodeArray));
+        $defaultNode = $node->default;
+
+        if (!$defaultNode) {
+            throw new RectorException("Property {$this->property} doesn't have default value");
         }
 
-        $this->addToArrayByOrderHelper->arrayToArrayByOrder($this->value, $this->constant, $nodeArray);
 
+        if (!$defaultNode instanceof Array_) {
+            throw new RectorException("Property {$this->property} isn't array, node class: " . get_class($defaultNode));
+        }
+
+        $this->addToArrayByOrderHelper->arrayToArrayByOrder($this->value, $this->constant, $defaultNode);
         return $node;
     }
 }

@@ -2,11 +2,25 @@ services:
   _defaults:
     autowire: true
 
+  CrmPlease\Coder\Helper\AddToArrayByOrderHelper: null
+
   CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector:
     calls:
       - method: setMethod
         arguments:
           - 'getArray'
+      - method: setValue
+        arguments:
+          - 'newValue'
+      - method: setConstant
+        arguments:
+          - 'CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector::class'
+
+  CrmPlease\Coder\Rector\AddToPropertyArrayByOrderRector:
+    calls:
+      - method: setProperty
+        arguments:
+          - 'array'
       - method: setValue
         arguments:
           - 'newValue'
