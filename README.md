@@ -67,3 +67,6 @@ Config for AddParameterToMethodRector:
 Config for AddCodeToMethodRector:
 - setMethod: method name, to which need to add code
 - setCode: code which need to add
+
+Config for AddTraitToClassRector:
+- setTrait: trait name, to which need to add to class

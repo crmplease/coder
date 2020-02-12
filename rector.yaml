@@ -100,5 +100,11 @@ services:
         arguments:
           - '$this->newProperty = $newParameter;'
 
+  CrmPlease\Coder\Rector\AddTraitToClassRector:
+    calls:
+      - method: setTrait
+        arguments:
+          - 'Some\TraitName'
+
 parameters:
   auto_import_names: true
