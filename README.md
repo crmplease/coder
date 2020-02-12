@@ -56,3 +56,10 @@ Config for AddPropertyToClassRector:
 - setVisibility: property visibility 'public', 'protected' or 'private', default is 'private'
 - setIsStatic: is property static or no, true or false, default false
 - setValue: default property value, don't pass it if isn't needed
+
+Config for AddParameterToMethodRector:
+- setMethod: method name, to which need to add parameter
+- setParameter: parameter name which need to add
+- setParameterType: parameter type which need to add, can be class name started with '\\' or scalar type
+- setHasValue: has default value or not, true or false, default true
+- setValue: default parameter value

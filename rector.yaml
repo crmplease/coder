@@ -73,5 +73,23 @@ services:
         arguments:
           - {'key': 'value'}
 
+  CrmPlease\Coder\Rector\AddParameterToMethodRector:
+    calls:
+      - method: setMethod
+        arguments:
+          - 'injectParameter'
+      - method: setParameter
+        arguments:
+          - 'newParameter'
+      - method: setParameterType
+        arguments:
+          - '\CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector'
+      - method: setHasValue
+        arguments:
+          - true
+      - method: setValue
+        arguments:
+          - null
+
 parameters:
   auto_import_names: true

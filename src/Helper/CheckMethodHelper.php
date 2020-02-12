@@ -14,13 +14,15 @@ class CheckMethodHelper
 {
     public function checkMethod(string $method, Node $node): bool
     {
-        $methodNode = $node->getAttribute(AttributeKey::METHOD_NODE);
-        if (!$methodNode instanceof ClassMethod) {
-            return false;
+        if ($node instanceof ClassMethod) {
+            $methodNode = $node;
+        } else {
+            $methodNode = $node->getAttribute(AttributeKey::METHOD_NODE);
+            if (!$methodNode instanceof ClassMethod) {
+                return false;
+            }
         }
-        if ($methodNode->name->name !== $method) {
-            return false;
-        }
-        return  true;
+
+        return $methodNode->name->name === $method;
     }
 }
