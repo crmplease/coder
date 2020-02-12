@@ -78,7 +78,7 @@ class AddToArrayByKeyHelper
         }
 
         if ($value) {
-            $valueNode = $this->convertToAstHelper->valueToAst($value);
+            $valueNode = $this->convertToAstHelper->simpleValueToAst($value);
         } elseif ($constant) {
             $valueNode = $this->convertToAstHelper->constantToAst($constant);
         } else {
@@ -87,7 +87,7 @@ class AddToArrayByKeyHelper
         $keyNode = null;
         if ($key) {
             if (!in_array((string)$key, $keys, true)) {
-                $keyNode = $this->convertToAstHelper->valueToAst($key);
+                $keyNode = $this->convertToAstHelper->simpleValueToAst($key);
             }
         } elseif ($keyConstant) {
             if (!in_array($keyConstant, $keyConstants, true)) {

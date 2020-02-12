@@ -7,6 +7,7 @@ services:
   CrmPlease\Coder\Helper\CheckMethodHelper: null
   CrmPlease\Coder\Helper\ConvertToAstHelper: null
   CrmPlease\Coder\Helper\GetNodeArrayHelper: null
+  CrmPlease\Coder\Helper\GetPropertyPropertyHelper: null
   CrmPlease\Coder\Helper\NameNodeHelper: null
 
   CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector:
@@ -56,6 +57,21 @@ services:
       - method: setValue
         arguments:
           - 'newValue'
+
+  CrmPlease\Coder\Rector\AddPropertyToClassRector:
+    calls:
+      - method: setProperty
+        arguments:
+          - 'newProperty'
+      - method: setVisibility
+        arguments:
+          - 'public'
+      - method: setIsStatic
+        arguments:
+          - true
+      - method: setValue
+        arguments:
+          - {'key': 'value'}
 
 parameters:
   auto_import_names: true

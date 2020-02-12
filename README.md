@@ -50,3 +50,9 @@ Config for AddToPropertyArrayByKeyRector:
 - setConstant: constant, which need to add to property array.
 
 You should provide only key or only key as constant. You should provide only value or only constant.
+
+Config for AddPropertyToClassRector:
+- setProperty: property name which need to add
+- setVisibility: property visibility 'public', 'protected' or 'private', default is 'private'
+- setIsStatic: is property static or no, true or false, default false
+- setValue: default property value, don't pass it if isn't needed
