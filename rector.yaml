@@ -91,5 +91,14 @@ services:
         arguments:
           - null
 
+  CrmPlease\Coder\Rector\AddCodeToMethodRector:
+    calls:
+      - method: setMethod
+        arguments:
+          - 'addCode'
+      - method: setCode
+        arguments:
+          - '$this->newProperty = $newParameter;'
+
 parameters:
   auto_import_names: true

@@ -63,3 +63,7 @@ Config for AddParameterToMethodRector:
 - setParameterType: parameter type which need to add, can be class name started with '\\' or scalar type
 - setHasValue: has default value or not, true or false, default true
 - setValue: default parameter value
+
+Config for AddCodeToMethodRector:
+- setMethod: method name, to which need to add code
+- setCode: code which need to add
