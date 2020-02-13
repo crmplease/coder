@@ -70,3 +70,9 @@ Config for AddCodeToMethodRector:
 
 Config for AddTraitToClassRector:
 - setTrait: trait name, to which need to add to class
+
+Config for AddPhpdocParamToMethodRector:
+- setMethod: method name, to which phpdoc need to add parameter
+- setParameter: parameter name which need to add to phpdoc
+- setParameterType: parameter type which need to add to phpdoc, can be class name started with '\\' or scalar type, collections, union type
+- setDescription: description for param in phpdoc

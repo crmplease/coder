@@ -106,5 +106,20 @@ services:
         arguments:
           - 'Some\TraitName'
 
+  CrmPlease\Coder\Rector\AddPhpdocParamToMethodRector:
+    calls:
+      - method: setMethod
+        arguments:
+          - 'addPhpDoc'
+      - method: setParameter
+        arguments:
+          - 'newParameter'
+      - method: setParameterType
+        arguments:
+          - 'int|int[]|\CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector'
+      - method: setDescription
+        arguments:
+          - 'some description'
+
 parameters:
   auto_import_names: true
