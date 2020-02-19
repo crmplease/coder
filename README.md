@@ -76,3 +76,6 @@ Config for AddPhpdocParamToMethodRector:
 - setParameter: parameter name which need to add to phpdoc
 - setParameterType: parameter type which need to add to phpdoc, can be class name started with '\\' or scalar type, collections, union type
 - setDescription: description for param in phpdoc
+
+Config for ChangeClassParentRector:
+- setParentClass: new parent class name
