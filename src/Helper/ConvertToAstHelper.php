@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace CrmPlease\Coder\Helper;
 
+use CrmPlease\Coder\Code;
+use CrmPlease\Coder\Constant;
 use CrmPlease\Coder\Rector\RectorException;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -60,6 +62,13 @@ class ConvertToAstHelper
         }
         if (is_string($value)) {
             return new String_($value, ['kind' => String_::KIND_SINGLE_QUOTED]);
+        }
+        if ($value instanceof Constant) {
+            return $this->constantToAst($value->getConstant());
+        }
+        if ($value instanceof Code) {
+            // hack for insert code as is
+            return new ConstFetch(new Name([$value->getCode()]));
         }
 
         throw new RectorException("Value type '" . gettype($value) . "' isn't supported");

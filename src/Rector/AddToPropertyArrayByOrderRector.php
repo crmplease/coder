@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace CrmPlease\Coder\Rector;
 
+use CrmPlease\Coder\Code;
+use CrmPlease\Coder\Constant;
 use CrmPlease\Coder\Helper\AddToArrayByOrderHelper;
-use CrmPlease\Coder\Helper\GetNodeArrayHelper;
+use CrmPlease\Coder\Helper\NodeArrayHelper;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\Rector\AbstractRector;
@@ -16,15 +18,15 @@ use Rector\RectorDefinition\RectorDefinition;
  */
 class AddToPropertyArrayByOrderRector extends AbstractRector
 {
-    private $getNodeArrayHelper;
+    private $nodeArrayHelper;
     private $addToArrayByOrderHelper;
     private $property = '';
+    private $path = [];
     private $value;
-    private $constant = '';
 
-    public function __construct(GetNodeArrayHelper $getNodeArrayHelper, AddToArrayByOrderHelper $addToArrayByOrderHelper)
+    public function __construct(NodeArrayHelper $nodeArrayHelper, AddToArrayByOrderHelper $addToArrayByOrderHelper)
     {
-        $this->getNodeArrayHelper = $getNodeArrayHelper;
+        $this->nodeArrayHelper = $nodeArrayHelper;
         $this->addToArrayByOrderHelper = $addToArrayByOrderHelper;
     }
 
@@ -40,24 +42,24 @@ class AddToPropertyArrayByOrderRector extends AbstractRector
     }
 
     /**
-     * @param string|float|int $value
+     * @param string[]|int[]|Constant[] $path
+     *
+     * @return $this
+     */
+    public function setPath($path): self
+    {
+        $this->path = $path;
+        return $this;
+    }
+
+    /**
+     * @param string|float|int|array|Constant|Code $value
      *
      * @return $this
      */
     public function setValue($value): self
     {
         $this->value = $value;
-        return $this;
-    }
-
-    /**
-     * @param string $constant
-     *
-     * @return $this
-     */
-    public function setConstant(string $constant): self
-    {
-        $this->constant = $constant;
         return $this;
     }
 
@@ -108,8 +110,9 @@ PHP
             return null;
         }
 
-        $arrayNode = $this->getNodeArrayHelper->getFromPropertyPropertyStatement($node);
-        $result = $this->addToArrayByOrderHelper->addToArrayByOrder($this->value, $this->constant, $arrayNode);
-        return $result ? $node : null;
+        $arrayNode = $this->nodeArrayHelper->getFromPropertyPropertyStatement($node);
+        $arrayNode = $this->nodeArrayHelper->findOrAddArrayByPath($this->path, $arrayNode);
+        $this->addToArrayByOrderHelper->addToArrayByOrder($this->value, $arrayNode);
+        return $node;
     }
 }

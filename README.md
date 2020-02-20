@@ -2,7 +2,8 @@
 
 How to run:
 ```bash
-vendor/bin/rector process --autoload-file path/to/project/vendor/autoload.php\\
+vendor/bin/rector process --config path/to/project/rector.yaml\\
+   --autoload-file path/to/project/vendor/autoload.php\\
    --only "\CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector"\\
    path/to/project/Path/To/Class.php
 ```
@@ -18,38 +19,51 @@ In all rectors value can be:
 - int
 - float
 - string
+- \CrmPlease\Coder\Constant
+- \CrmPlease\Coder\Code
+- array of arrays or types above with keys of types below
 
 In all rectors key can be:
 - int
 - string
+- \CrmPlease\Coder\Constant
+
+In all rectors path is a path in array, if path not found, then it will be added. Path is array, so if we use path `['level1', 'level2']`, then empty array became:
+```php
+[
+    'level1' => [
+        'level2' => [
+            // key => value or value will be added here
+        ],
+    ],
+];
+```
+Parts of the path can be same as key:
+- int
+- string
+- \CrmPlease\Coder\Constant
 
 Config for AddToReturnArrayByOrderRector:
 - setMethod: method name, to which need to add value/constant to return array, method should have only one return statement, which return array
+- setPath: path in array where need to add value
 - setValue: value, which need to add to return array
-- setConstant: constant, which need to add to return array.
 
 Config for AddToPropertyArrayByOrderRector:
 - setProperty: property name, to which need to add value/constant, property should be array
+- setPath: path in array where need to add value
 - setValue: value, which need to add to return array
-- setConstant: constant, which need to add to return array.
 
 Config for AddToReturnArrayByKeyRector:
 - setMethod: method name, to which need to add value/constant to return array by key, method should have only one return statement, which return array
+- setPath: path in array where need to add key => value
 - setKey: key, by which need to add to return array
-- setKeyConstant: key as constant, by which need to add to return array
 - setValue: value, which need to add to return array by key
-- setConstant: constant, which need to add to return array.
-
-You should provide only key or only key as constant. You should provide only value or only constant.
 
 Config for AddToPropertyArrayByKeyRector:
 - setProperty: property name, to which need to add value/constant by key, property should be array
+- setPath: path in array where need to add key => value
 - setKey: key, by which need to add to property array
-- setKeyConstant: key as constant, by which need to add to property array
 - setValue: value, which need to add to property array by key
-- setConstant: constant, which need to add to property array.
-
-You should provide only key or only key as constant. You should provide only value or only constant.
 
 Config for AddPropertyToClassRector:
 - setProperty: property name which need to add

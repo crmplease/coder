@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace CrmPlease\Coder\Rector;
 
+use CrmPlease\Coder\Code;
+use CrmPlease\Coder\Constant;
 use CrmPlease\Coder\Helper\AddToArrayByKeyHelper;
-use CrmPlease\Coder\Helper\GetNodeArrayHelper;
+use CrmPlease\Coder\Helper\NodeArrayHelper;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\Rector\AbstractRector;
@@ -16,17 +18,16 @@ use Rector\RectorDefinition\RectorDefinition;
  */
 class AddToPropertyArrayByKeyRector extends AbstractRector
 {
-    private $getNodeArrayHelper;
+    private $nodeArrayHelper;
     private $addToArrayByKeyHelper;
     private $property = '';
+    private $path = [];
     private $key;
-    private $keyConstant;
     private $value;
-    private $constant = '';
 
-    public function __construct(GetNodeArrayHelper $getNodeArrayHelper, AddToArrayByKeyHelper $addToArrayByKeyHelper)
+    public function __construct(NodeArrayHelper $nodeArrayHelper, AddToArrayByKeyHelper $addToArrayByKeyHelper)
     {
-        $this->getNodeArrayHelper = $getNodeArrayHelper;
+        $this->nodeArrayHelper = $nodeArrayHelper;
         $this->addToArrayByKeyHelper = $addToArrayByKeyHelper;
     }
 
@@ -42,68 +43,41 @@ class AddToPropertyArrayByKeyRector extends AbstractRector
     }
 
     /**
-     * @param string|int $key
+     * @param string[]|int[]|Constant[] $path
      *
      * @return $this
-     * @throws RectorException
+     */
+    public function setPath($path): self
+    {
+        $this->path = $path;
+        return $this;
+    }
+
+    /**
+     * @param string|int|Constant $key
+     *
+     * @return $this
      */
     public function setKey($key): self
     {
-        if ($this->keyConstant) {
-            throw new RectorException('You should provide only key or only keyConstant to AddToReturnArrayByKeyRector');
-        }
         $this->key = $key;
         return $this;
     }
 
     /**
-     * @param string $keyConstant
+     * @param string|float|int|array|Constant|Code $value
      *
      * @return $this
-     * @throws RectorException
-     */
-    public function setKeyConstant(string $keyConstant): self
-    {
-        if ($this->key) {
-            throw new RectorException('You should provide only key or only keyConstant to AddToReturnArrayByKeyRector');
-        }
-        $this->keyConstant = $keyConstant;
-        return $this;
-    }
-
-    /**
-     * @param string|float|int $value
-     *
-     * @return $this
-     * @throws RectorException
      */
     public function setValue($value): self
     {
-        if ($this->constant) {
-            throw new RectorException('You should provide only value or only constant to AddToReturnArrayByKeyRector');
-        }
         $this->value = $value;
-        return $this;
-    }
-
-    /**
-     * @param string $constant
-     *
-     * @return $this
-     * @throws RectorException
-     */
-    public function setConstant(string $constant): self
-    {
-        if ($this->value) {
-            throw new RectorException('You should provide only value or only constant to AddToReturnArrayByKeyRector');
-        }
-        $this->constant = $constant;
         return $this;
     }
 
     public function getDefinition(): RectorDefinition
     {
-        return new RectorDefinition('Add to property "array" value "newValue" with check duplicates', [
+        return new RectorDefinition('Add to property "array" value "newValue" by "newKey" with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass
@@ -148,14 +122,13 @@ PHP
             return null;
         }
 
-        $arrayNode = $this->getNodeArrayHelper->getFromPropertyPropertyStatement($node);
-        $result = $this->addToArrayByKeyHelper->addToArrayByKey(
+        $arrayNode = $this->nodeArrayHelper->getFromPropertyPropertyStatement($node);
+        $arrayNode = $this->nodeArrayHelper->findOrAddArrayByPath($this->path, $arrayNode);
+        $this->addToArrayByKeyHelper->addToArrayByKey(
             $this->key,
-            $this->keyConstant,
             $this->value,
-            $this->constant,
             $arrayNode
         );
-        return $result ? $node : null;
+        return $node;
     }
 }

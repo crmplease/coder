@@ -5,43 +5,47 @@ services:
   CrmPlease\Coder\Helper\AddToArrayByKeyHelper: null
   CrmPlease\Coder\Helper\AddToArrayByOrderHelper: null
   CrmPlease\Coder\Helper\CheckMethodHelper: null
+  CrmPlease\Coder\Helper\ConvertFromAstHelper: null
   CrmPlease\Coder\Helper\ConvertToAstHelper: null
-  CrmPlease\Coder\Helper\GetNodeArrayHelper: null
   CrmPlease\Coder\Helper\GetPropertyPropertyHelper: null
   CrmPlease\Coder\Helper\NameNodeHelper: null
+  CrmPlease\Coder\Helper\NodeArrayHelper: null
 
   CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector:
     calls:
       - method: setMethod
         arguments:
           - 'getArray'
+      - method: setPath
+        arguments:
+          - ['level1', 'level2']
       - method: setValue
         arguments:
           - 'newValue'
-      - method: setConstant
-        arguments:
-          - 'CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector::class'
 
   CrmPlease\Coder\Rector\AddToPropertyArrayByOrderRector:
     calls:
       - method: setProperty
         arguments:
           - 'array'
+      - method: setPath
+        arguments:
+          - ['level1', 'level2']
       - method: setValue
         arguments:
           - 'newValue'
-      - method: setConstant
-        arguments:
-          - 'CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector::class'
 
   CrmPlease\Coder\Rector\AddToReturnArrayByKeyRector:
     calls:
       - method: setMethod
         arguments:
           - 'getArrayByKey'
-      - method: setKeyConstant
+      - method: setPath
         arguments:
-          - 'CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector::class'
+          - ['level1', 'level2']
+      - method: setKey
+        arguments:
+          - 'newKey'
       - method: setValue
         arguments:
           - 'newValue'
@@ -51,9 +55,12 @@ services:
       - method: setProperty
         arguments:
           - 'arrayByKey'
-      - method: setKeyConstant
+      - method: setPath
         arguments:
-          - 'CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector::class'
+          - ['level1', 'level2']
+      - method: setKey
+        arguments:
+          - 'newKey'
       - method: setValue
         arguments:
           - 'newValue'
@@ -128,4 +135,4 @@ services:
           - 'Some\ParentClass'
 
 parameters:
-  auto_import_names: true
+  auto_import_names: false
