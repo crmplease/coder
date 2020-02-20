@@ -11,6 +11,15 @@ services:
   CrmPlease\Coder\Helper\NameNodeHelper: null
   CrmPlease\Coder\Helper\NodeArrayHelper: null
 
+  CrmPlease\Coder\Rector\AddToFileReturnArrayByOrderRector:
+    calls:
+      - method: setPath
+        arguments:
+          - ['level1', 'level2']
+      - method: setValue
+        arguments:
+          - 'newValue'
+
   CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector:
     calls:
       - method: setMethod
@@ -31,6 +40,18 @@ services:
       - method: setPath
         arguments:
           - ['level1', 'level2']
+      - method: setValue
+        arguments:
+          - 'newValue'
+
+  CrmPlease\Coder\Rector\AddToFileReturnArrayByKeyRector:
+    calls:
+      - method: setPath
+        arguments:
+          - ['level1', 'level2']
+      - method: setKey
+        arguments:
+          - 'newKey'
       - method: setValue
         arguments:
           - 'newValue'

@@ -43,6 +43,10 @@ Parts of the path can be same as key:
 - string
 - \CrmPlease\Coder\Constant
 
+Config for AddToFileReturnArrayByOrderRector:
+- setPath: path in array where need to add value
+- setValue: value, which need to add to return array
+
 Config for AddToReturnArrayByOrderRector:
 - setMethod: method name, to which need to add value/constant to return array, method should have only one return statement, which return array
 - setPath: path in array where need to add value
@@ -52,6 +56,11 @@ Config for AddToPropertyArrayByOrderRector:
 - setProperty: property name, to which need to add value/constant, property should be array
 - setPath: path in array where need to add value
 - setValue: value, which need to add to return array
+
+Config for AddToFileReturnArrayByKeyRector:
+- setPath: path in array where need to add key => value
+- setKey: key, by which need to add to return array
+- setValue: value, which need to add to return array by key
 
 Config for AddToReturnArrayByKeyRector:
 - setMethod: method name, to which need to add value/constant to return array by key, method should have only one return statement, which return array
