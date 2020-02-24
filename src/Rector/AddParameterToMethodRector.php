@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace CrmPlease\Coder\Rector;
 
+use CrmPlease\Coder\Code;
+use CrmPlease\Coder\Constant;
 use CrmPlease\Coder\Helper\CheckMethodHelper;
 use CrmPlease\Coder\Helper\ConvertToAstHelper;
+use CrmPlease\Coder\Helper\NameNodeHelper;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
@@ -23,16 +26,22 @@ use function strpos;
 class AddParameterToMethodRector extends AbstractRector
 {
     private $checkMethodHelper;
+    private $nameNodeHelper;
     private $convertToAstHelper;
     private $method = '';
     private $parameter = '';
     private $parameterType = '';
-    private $hasValue = true;
+    private $hasValue = false;
     private $value;
 
-    public function __construct(CheckMethodHelper $checkMethodHelper, ConvertToAstHelper $convertToAstHelper)
+    public function __construct(
+        CheckMethodHelper $checkMethodHelper,
+        NameNodeHelper $nameNodeHelper,
+        ConvertToAstHelper $convertToAstHelper
+    )
     {
         $this->checkMethodHelper = $checkMethodHelper;
+        $this->nameNodeHelper = $nameNodeHelper;
         $this->convertToAstHelper = $convertToAstHelper;
     }
 
@@ -76,7 +85,7 @@ class AddParameterToMethodRector extends AbstractRector
     }
 
     /**
-     * @param string[]|float[]|int[]|string|float|int|null $value
+     * @param string|float|int|array|Constant|Code|null $value
      *
      * @return $this
      */
@@ -138,17 +147,16 @@ PHP
                     }
                     throw new RectorException("Parameter '{$this->parameter}' already exist, but hasn't type");
                 }
-                if ($this->getName($parameterNode->type) !== ltrim($this->parameterType, '\\')) {
-                    throw new RectorException("Parameter '{$this->parameter}' already exist, but has type '{$this->getName($parameterNode->type)}'");
+                $currentParameterType = $this->nameNodeHelper->getNameByTypeNode($parameterNode->type);
+                if ($currentParameterType !== ltrim($this->parameterType, '\\')) {
+                    throw new RectorException("Parameter '{$this->parameter}' already exist, but has type '{$currentParameterType}'");
                 }
-                if ((bool)$parameterNode->default !== $this->hasValue) {
-                    if ($parameterNode->default) {
-                        throw new RectorException("Parameter '{$this->parameter}' already exist, but has default value");
-                    }
-                    throw new RectorException("Parameter '{$this->parameter}' already exist, but hasn't default value");
+                if ($this->hasValue) {
+                    $parameterNode->default = $this->convertToAstHelper->simpleValueOrArrayToAst($this->value);
+                } else {
+                    $parameterNode->default = null;
                 }
-                // compare value isn't implemented
-                return null;
+                return $node;
             }
         }
 

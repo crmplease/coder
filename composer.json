@@ -1,6 +1,8 @@
 {
     "name": "crmplease/coder",
     "license": "proprietary",
+    "type": "library",
+    "description": "Coder is library for code-generation, e.g. add property to class, parameter to method, value to array and etc.",
     "require": {
         "rector/rector": "^0.6.14"
     },

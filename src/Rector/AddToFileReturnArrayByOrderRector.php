@@ -20,7 +20,6 @@ class AddToFileReturnArrayByOrderRector extends AbstractRector
 {
     private $nodeArrayHelper;
     private $addToArrayByOrderHelper;
-    private $method = '';
     private $path = [];
     private $value;
 
@@ -28,17 +27,6 @@ class AddToFileReturnArrayByOrderRector extends AbstractRector
     {
         $this->nodeArrayHelper = $nodeArrayHelper;
         $this->addToArrayByOrderHelper = $addToArrayByOrderHelper;
-    }
-
-    /**
-     * @param string $method
-     *
-     * @return $this
-     */
-    public function setMethod(string $method): self
-    {
-        $this->method = $method;
-        return $this;
     }
 
     /**

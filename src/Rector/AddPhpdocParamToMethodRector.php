@@ -83,6 +83,11 @@ class AddPhpdocParamToMethodRector extends AbstractRector
         return $this;
     }
 
+    /**
+     * @param string $description
+     *
+     * @return $this
+     */
     public function setDescription(string $description): self
     {
         $this->description = $description;

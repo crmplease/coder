@@ -27,6 +27,11 @@ class AddTraitToClassRector extends AbstractRector
         $this->nameNodeHelper = $nameNodeHelper;
     }
 
+    /**
+     * @param string $trait
+     *
+     * @return $this
+     */
     public function setTrait(string $trait): self
     {
         $this->trait = $trait;
@@ -76,8 +81,7 @@ PHP
 
         foreach ($node->getTraitUses() as $traitUseNode) {
             foreach ($traitUseNode->traits as $traitNameNode) {
-                $name = $this->nameNodeHelper->getNameByNodeName($traitNameNode);
-                if (ltrim($name, '\\') === $traitName) {
+                if ($traitNameNode->toString() === $traitName) {
                     return null;
                 }
             }

@@ -2,6 +2,11 @@ services:
   _defaults:
     autowire: true
 
+  CrmPlease\Coder\Coder:
+    public: true
+  CrmPlease\Coder\RectorRunner: null
+
+  # rector helpers
   CrmPlease\Coder\Helper\AddToArrayByKeyHelper: null
   CrmPlease\Coder\Helper\AddToArrayByOrderHelper: null
   CrmPlease\Coder\Helper\CheckMethodHelper: null
@@ -11,149 +16,19 @@ services:
   CrmPlease\Coder\Helper\NameNodeHelper: null
   CrmPlease\Coder\Helper\NodeArrayHelper: null
 
-  CrmPlease\Coder\Rector\AddToFileReturnArrayByOrderRector:
-    calls:
-      - method: setPath
-        arguments:
-          - ['level1', 'level2']
-      - method: setValue
-        arguments:
-          - 'newValue'
-
-  CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector:
-    calls:
-      - method: setMethod
-        arguments:
-          - 'getArray'
-      - method: setPath
-        arguments:
-          - ['level1', 'level2']
-      - method: setValue
-        arguments:
-          - 'newValue'
-
-  CrmPlease\Coder\Rector\AddToPropertyArrayByOrderRector:
-    calls:
-      - method: setProperty
-        arguments:
-          - 'array'
-      - method: setPath
-        arguments:
-          - ['level1', 'level2']
-      - method: setValue
-        arguments:
-          - 'newValue'
-
-  CrmPlease\Coder\Rector\AddToFileReturnArrayByKeyRector:
-    calls:
-      - method: setPath
-        arguments:
-          - ['level1', 'level2']
-      - method: setKey
-        arguments:
-          - 'newKey'
-      - method: setValue
-        arguments:
-          - 'newValue'
-
-  CrmPlease\Coder\Rector\AddToReturnArrayByKeyRector:
-    calls:
-      - method: setMethod
-        arguments:
-          - 'getArrayByKey'
-      - method: setPath
-        arguments:
-          - ['level1', 'level2']
-      - method: setKey
-        arguments:
-          - 'newKey'
-      - method: setValue
-        arguments:
-          - 'newValue'
-
-  CrmPlease\Coder\Rector\AddToPropertyArrayByKeyRector:
-    calls:
-      - method: setProperty
-        arguments:
-          - 'arrayByKey'
-      - method: setPath
-        arguments:
-          - ['level1', 'level2']
-      - method: setKey
-        arguments:
-          - 'newKey'
-      - method: setValue
-        arguments:
-          - 'newValue'
-
-  CrmPlease\Coder\Rector\AddPropertyToClassRector:
-    calls:
-      - method: setProperty
-        arguments:
-          - 'newProperty'
-      - method: setVisibility
-        arguments:
-          - 'public'
-      - method: setIsStatic
-        arguments:
-          - true
-      - method: setValue
-        arguments:
-          - {'key': 'value'}
-
-  CrmPlease\Coder\Rector\AddParameterToMethodRector:
-    calls:
-      - method: setMethod
-        arguments:
-          - 'injectParameter'
-      - method: setParameter
-        arguments:
-          - 'newParameter'
-      - method: setParameterType
-        arguments:
-          - '\CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector'
-      - method: setHasValue
-        arguments:
-          - true
-      - method: setValue
-        arguments:
-          - null
-
-  CrmPlease\Coder\Rector\AddCodeToMethodRector:
-    calls:
-      - method: setMethod
-        arguments:
-          - 'addCode'
-      - method: setCode
-        arguments:
-          - '$this->newProperty = $newParameter;'
-
-  CrmPlease\Coder\Rector\AddTraitToClassRector:
-    calls:
-      - method: setTrait
-        arguments:
-          - 'Some\TraitName'
-
-  CrmPlease\Coder\Rector\AddPhpdocParamToMethodRector:
-    calls:
-      - method: setMethod
-        arguments:
-          - 'addPhpDoc'
-      - method: setParameter
-        arguments:
-          - 'newParameter'
-      - method: setParameterType
-        arguments:
-          - 'int|int[]|\CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector'
-      - method: setDescription
-        arguments:
-          - 'some description'
-
-  CrmPlease\Coder\Rector\ChangeClassParentRector:
-    calls:
-      - method: setParentClass
-        arguments:
-          - 'Some\ParentClass'
+  # rectors
+  CrmPlease\Coder\Rector\AddToFileReturnArrayByOrderRector: null
+  CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector: null
+  CrmPlease\Coder\Rector\AddToPropertyArrayByOrderRector: null
+  CrmPlease\Coder\Rector\AddToFileReturnArrayByKeyRector: null
+  CrmPlease\Coder\Rector\AddToReturnArrayByKeyRector: null
+  CrmPlease\Coder\Rector\AddToPropertyArrayByKeyRector: null
+  CrmPlease\Coder\Rector\AddPropertyToClassRector: null
+  CrmPlease\Coder\Rector\AddParameterToMethodRector: null
+  CrmPlease\Coder\Rector\AddCodeToMethodRector: null
+  CrmPlease\Coder\Rector\AddTraitToClassRector: null
+  CrmPlease\Coder\Rector\AddPhpdocParamToMethodRector: null
+  CrmPlease\Coder\Rector\ChangeClassParentRector: null
 
 parameters:
   auto_import_names: false

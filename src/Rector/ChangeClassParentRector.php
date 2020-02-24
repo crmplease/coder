@@ -5,7 +5,7 @@ namespace CrmPlease\Coder\Rector;
 
 use CrmPlease\Coder\Helper\NameNodeHelper;
 use PhpParser\Node;
-use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Rector\AbstractRector;
 use Rector\RectorDefinition\CodeSample;
@@ -77,7 +77,7 @@ PHP
             return null;
         }
 
-        $node->extends = new Name($parentClassName);
+        $node->extends = new FullyQualified($parentClassName);
         return $node;
     }
 }

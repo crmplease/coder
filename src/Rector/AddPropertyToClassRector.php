@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace CrmPlease\Coder\Rector;
 
+use CrmPlease\Coder\Code;
+use CrmPlease\Coder\Constant;
 use CrmPlease\Coder\Helper\ConvertToAstHelper;
 use CrmPlease\Coder\Helper\GetPropertyPropertyHelper;
 use PhpParser\Node;
@@ -56,7 +58,8 @@ class AddPropertyToClassRector extends AbstractRector
     }
 
     /**
-     * @param string $visibility
+     * @see AddPropertyToClassRector::VISIBILITIES_TO_AST_FLAGS
+     * @param string $visibility self::VISIBILITY_*
      *
      * @return $this
      * @throws RectorException
@@ -83,7 +86,7 @@ class AddPropertyToClassRector extends AbstractRector
     }
 
     /**
-     * @param string[]|float[]|int[]|string|float|int|null $value
+     * @param string|float|int|array|Constant|Code|null $value
      *
      * @return $this
      */
@@ -162,8 +165,12 @@ PHP
                 }
                 throw new RectorException("Property {$this->property} already exists, but isn't static");
             }
-            // compare value isn't implemented
-            return null;
+            if ($this->value === null) {
+                $propertyPropertyNode->default = null;
+            } else {
+                $propertyPropertyNode->default = $this->convertToAstHelper->simpleValueOrArrayToAst($this->value);
+            }
+            return $node;
         }
         $valueNode = null;
         if ($this->value !== null) {
