@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace CrmPlease\Coder;
 
-use Rector\Configuration\Configuration;
-use Rector\DependencyInjection\RectorContainerFactory;
-use Rector\Set\Set;
+use Rector\Core\Configuration\Configuration;
+use Rector\Core\DependencyInjection\RectorContainerFactory;
+use Rector\Core\Set\Set;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symplify\SetConfigResolver\ConfigResolver;

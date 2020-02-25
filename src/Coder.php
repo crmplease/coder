@@ -16,7 +16,7 @@ use CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector;
 use CrmPlease\Coder\Rector\AddTraitToClassRector;
 use CrmPlease\Coder\Rector\ChangeClassParentRector;
 use CrmPlease\Coder\Rector\RectorException;
-use Rector\Exception\ShouldNotHappenException;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Symplify\SmartFileSystem\Exception\FileNotFoundException;
 
 /**
@@ -79,6 +79,18 @@ class Coder
         $this->addTraitToClassRector = $addTraitToClassRector;
         $this->addPhpdocParamToMethodRector = $addPhpdocParamToMethodRector;
         $this->changeClassParentRector = $changeClassParentRector;
+    }
+
+    /**
+     * @param bool $showProgressBar
+     *
+     * @return $this
+     */
+    public function setShowProgressBar(bool $showProgressBar): self
+    {
+        $this->rectorRunner->setShowProgressBar($showProgressBar);
+
+        return $this;
     }
 
     /**

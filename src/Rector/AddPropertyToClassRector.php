@@ -12,10 +12,11 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Rector\AbstractRector;
-use Rector\RectorDefinition\CodeSample;
-use Rector\RectorDefinition\RectorDefinition;
+use Rector\Core\Rector\AbstractRector;
+use Rector\Core\RectorDefinition\CodeSample;
+use Rector\Core\RectorDefinition\RectorDefinition;
 use function array_merge;
+use function array_slice;
 use function get_class;
 
 /**
@@ -187,10 +188,38 @@ PHP
                 new PropertyProperty(new Node\VarLikeIdentifier($this->property), $valueNode),
             ]
         );
-        $node->stmts = array_merge(
-            [$propertyNode],
-            $node->stmts
-        );
+        $constructorMethodNode = $node->getMethod('__construct');
+        $constructorMethodStatementNumber = null;
+        $lastPropertyStatementNumber = null;
+        foreach ($node->stmts as $statementNumber => $statement) {
+            if ($statement === $constructorMethodNode) {
+                $constructorMethodStatementNumber = $statementNumber;
+            }
+            if ($statement instanceof Property) {
+                $lastPropertyStatementNumber = $statementNumber;
+            }
+        }
+
+        if ($lastPropertyStatementNumber === null && $constructorMethodStatementNumber === null) {
+            // if no constructor or any property found, then put new property to begin of class
+            $node->stmts = array_merge(
+                [$propertyNode],
+                $node->stmts
+            );
+        } else {
+            if ($lastPropertyStatementNumber === null) {
+                // if constructor found, then put new property before constructor
+                $putToStatement = $constructorMethodStatementNumber;
+            } else {
+                // if any properties found, then put new property after last property
+                $putToStatement = $lastPropertyStatementNumber + 1;
+            }
+            $node->stmts = array_merge(
+                array_slice($node->stmts, 0, $putToStatement),
+                [$propertyNode],
+                array_slice($node->stmts, $putToStatement)
+            );
+        }
         return $node;
     }
 }

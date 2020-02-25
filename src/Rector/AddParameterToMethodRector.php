@@ -12,11 +12,12 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Rector\AbstractRector;
-use Rector\RectorDefinition\CodeSample;
-use Rector\RectorDefinition\RectorDefinition;
+use Rector\Core\Rector\AbstractRector;
+use Rector\Core\RectorDefinition\CodeSample;
+use Rector\Core\RectorDefinition\RectorDefinition;
 use function ltrim;
 use function strpos;
 
@@ -139,16 +140,29 @@ PHP
             return null;
         }
 
+        $parameterType = $this->parameterType;
+        $isParameterNullable = false;
+        if (strpos($parameterType, '?') === 0) {
+            $isParameterNullable = true;
+            $parameterType = ltrim($parameterType, '?');
+        }
+        $isParameterClass = strpos($this->parameterType, '\\') !== false;
+        $parameterType = ltrim($parameterType, '\\');
+        $parameterTypeClass = $parameterType;
+        if ($isParameterNullable) {
+            $parameterType = "?{$parameterType}";
+        }
+
         foreach ($node->params as $parameterNode) {
             if ($parameterNode->var->name === $this->parameter) {
-                if ((bool)$parameterNode->type !== (bool)$this->parameterType) {
+                if ((bool)$parameterNode->type !== (bool)$parameterType) {
                     if ($parameterNode->type) {
                         throw new RectorException("Parameter '{$this->parameter}' already exist, but has type");
                     }
                     throw new RectorException("Parameter '{$this->parameter}' already exist, but hasn't type");
                 }
                 $currentParameterType = $this->nameNodeHelper->getNameByTypeNode($parameterNode->type);
-                if ($currentParameterType !== ltrim($this->parameterType, '\\')) {
+                if ($currentParameterType !== $parameterType) {
                     throw new RectorException("Parameter '{$this->parameter}' already exist, but has type '{$currentParameterType}'");
                 }
                 if ($this->hasValue) {
@@ -161,11 +175,14 @@ PHP
         }
 
         $typeNode = null;
-        if ($this->parameterType) {
-            if (strpos($this->parameterType, '\\') !== false) {
-                $typeNode = new FullyQualified(ltrim($this->parameterType, '\\'));
+        if ($parameterType) {
+            if ($isParameterClass) {
+                $typeNode = new FullyQualified($parameterTypeClass);
             } else {
                 $typeNode = new Identifier($this->parameterType);
+            }
+            if ($isParameterNullable) {
+                $typeNode = new NullableType($typeNode);
             }
         }
 

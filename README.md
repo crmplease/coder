@@ -475,7 +475,7 @@ $coder->addCodeToMethod(
 );
 ```
 
-**No code duplicates is checked.**
+In simple cases code duplicates is checked (when you try to add one line code).
 
 Example:
 ```php

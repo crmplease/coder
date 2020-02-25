@@ -10,9 +10,9 @@ use CrmPlease\Coder\Helper\CheckMethodHelper;
 use CrmPlease\Coder\Helper\NodeArrayHelper;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Return_;
-use Rector\Rector\AbstractRector;
-use Rector\RectorDefinition\CodeSample;
-use Rector\RectorDefinition\RectorDefinition;
+use Rector\Core\Rector\AbstractRector;
+use Rector\Core\RectorDefinition\CodeSample;
+use Rector\Core\RectorDefinition\RectorDefinition;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
@@ -77,7 +77,7 @@ class AddToReturnArrayByOrderRector extends AbstractRector
                 <<<'PHP'
 class SomeClass
 {
-    public function getArray()
+    public function getArray(): array
     {
         return [
             'existsValue',
@@ -89,7 +89,7 @@ PHP
                 <<<'PHP'
 class SomeClass
 {
-    public function getArray()
+    public function getArray(): array
     {
         return [
             'existsValue',

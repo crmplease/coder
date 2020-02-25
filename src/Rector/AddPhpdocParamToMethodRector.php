@@ -15,11 +15,15 @@ use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareParamTagValueNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
-use Rector\Exception\ShouldNotHappenException;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStan\Type\FullyQualifiedObjectType;
-use Rector\Rector\AbstractRector;
-use Rector\RectorDefinition\CodeSample;
-use Rector\RectorDefinition\RectorDefinition;
+use Rector\Core\Rector\AbstractRector;
+use Rector\Core\RectorDefinition\CodeSample;
+use Rector\Core\RectorDefinition\RectorDefinition;
+use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use function count;
 use function explode;
 use function implode;
@@ -31,6 +35,7 @@ use function strpos;
  */
 class AddPhpdocParamToMethodRector extends AbstractRector
 {
+    private $parameterProvider;
     private $checkMethodHelper;
     private $phpDocParser;
     private $lexer;
@@ -40,11 +45,13 @@ class AddPhpdocParamToMethodRector extends AbstractRector
     private $description = '';
 
     public function __construct(
+        ParameterProvider $parameterProvider,
         CheckMethodHelper $checkMethodHelper,
         PhpDocParser $phpDocParser,
         Lexer $lexer
     )
     {
+        $this->parameterProvider = $parameterProvider;
         $this->checkMethodHelper = $checkMethodHelper;
         $this->phpDocParser = $phpDocParser;
         $this->lexer = $lexer;
@@ -166,25 +173,29 @@ PHP
         $typeTagNode = $this->createTypeTagNodeByString($parameterType);
         $parameterTagNode = $this->createPhpDocParamNode($typeTagNode, $parameterNode, $this->description);
 
-        $paramTagNodes = $this->docBlockManipulator->getTagsByName($node, 'param');
+        /** @var PhpDocInfo $phpDocInfo */
+        $phpDocInfo = $node->getAttribute(AttributeKey::PHP_DOC_INFO);
+
+        $paramTagNodes = $phpDocInfo->getTagsByName('param');
         foreach ($paramTagNodes as $paramTagNode) {
             /** @var AttributeAwareParamTagValueNode $value */
             $value = $paramTagNode->value;
             if (ltrim($value->parameterName, '$') !== $this->parameter) {
                 continue;
             }
-            $phpDocInfo = $this->docBlockManipulator->createPhpDocInfoFromNode($node);
-            $this->docBlockManipulator->removeTagFromPhpDocNode($phpDocInfo->getPhpDocNode(), $paramTagNode);
-            $this->docBlockManipulator->updateNodeWithPhpDocInfo($node, $phpDocInfo);
+            $phpDocInfo->removeTagValueNodeFromNode($paramTagNode->value);
             break;
         }
 
-        $this->docBlockManipulator->addTag($node, $parameterTagNode);
+        $phpDocInfo->addPhpDocTagNode($parameterTagNode);
         return $node;
     }
 
     protected function simplifyFqn(string $unionType, Node $node): string
     {
+        if (!$this->parameterProvider->provideParameter(Option::AUTO_IMPORT_NAMES)) {
+            return $unionType;
+        }
         $types = explode('|', $unionType);
         foreach ($types as &$type) {
             if (strpos($type, '\\') === false) {

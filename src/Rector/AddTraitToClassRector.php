@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace CrmPlease\Coder\Rector;
 
-use CrmPlease\Coder\Helper\NameNodeHelper;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\TraitUse;
-use Rector\Rector\AbstractRector;
-use Rector\RectorDefinition\CodeSample;
-use Rector\RectorDefinition\RectorDefinition;
+use Rector\Core\Rector\AbstractRector;
+use Rector\Core\RectorDefinition\CodeSample;
+use Rector\Core\RectorDefinition\RectorDefinition;
 use function array_merge;
+use function array_slice;
 use function ltrim;
 
 /**
@@ -19,13 +19,7 @@ use function ltrim;
  */
 class AddTraitToClassRector extends AbstractRector
 {
-    private $nameNodeHelper;
     private $trait;
-
-    public function __construct(NameNodeHelper $nameNodeHelper)
-    {
-        $this->nameNodeHelper = $nameNodeHelper;
-    }
 
     /**
      * @param string $trait
@@ -69,7 +63,6 @@ PHP
      * @param Node $node
      *
      * @return Node|null
-     * @throws RectorException
      */
     public function refactor(Node $node): ?Node
     {
@@ -88,7 +81,25 @@ PHP
         }
 
         $traitUseNode = new TraitUse([new FullyQualified($traitName)]);
-        $node->stmts = array_merge([$traitUseNode], $node->stmts);
+        $lastTraitStatementNumber = null;
+        foreach ($node->stmts as $statementNumber => $statement) {
+            if (!$statement instanceof TraitUse) {
+                continue;
+            }
+            $lastTraitStatementNumber = $statementNumber;
+        }
+
+        if ($lastTraitStatementNumber === null) {
+            // if there is no trait uses, then add to begin of class
+            $node->stmts = array_merge([$traitUseNode], $node->stmts);
+        } else {
+            // add after last trait use
+            $node->stmts = array_merge(
+                array_slice($node->stmts, 0, $lastTraitStatementNumber + 1),
+                [$traitUseNode],
+                array_slice($node->stmts, $lastTraitStatementNumber + 1)
+            );
+        }
         return $node;
     }
 }

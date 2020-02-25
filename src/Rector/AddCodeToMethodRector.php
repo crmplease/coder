@@ -8,9 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Rector\AbstractRector;
-use Rector\RectorDefinition\CodeSample;
-use Rector\RectorDefinition\RectorDefinition;
+use Rector\Core\Rector\AbstractRector;
+use Rector\Core\RectorDefinition\CodeSample;
+use Rector\Core\RectorDefinition\RectorDefinition;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
@@ -50,7 +50,7 @@ class AddCodeToMethodRector extends AbstractRector
 
     public function getDefinition(): RectorDefinition
     {
-        return new RectorDefinition('Add to method "addCode" code "$this->b = $b;" to the end of method', [
+        return new RectorDefinition('Add to method "addCode" code "$this->b = $b;" to the end of method with trying check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass
@@ -94,6 +94,14 @@ PHP
 
         if (!$this->checkMethodHelper->checkMethod($this->method, $node)) {
             return null;
+        }
+
+        // try to check duplicates in simple cases
+        foreach ($node->stmts as $statement) {
+            $code = $this->betterStandardPrinter->print($statement);
+            if ($code === $this->code) {
+                return null;
+            }
         }
 
         $node->stmts[] = new ConstFetch(
