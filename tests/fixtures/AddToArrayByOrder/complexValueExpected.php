@@ -3,7 +3,7 @@
  * @author Mougrim <rinat@mougrim.ru>
  */
 
-use Tests\CrmPlease\Coder\fixtures\FooClass;
+use Tests\Crmplease\Coder\fixtures\FooClass;
 
 $country = new stdClass();
 return [
@@ -24,5 +24,5 @@ return [
     'test',
     FooClass::class,
     FooClass::TEST,
-    [2, 'string', \Tests\CrmPlease\Coder\fixtures\BarClass::class, \Tests\CrmPlease\Coder\fixtures\BarClass::TEST, Rule::unique('countries')->ignore($country->getKey())],
+    [2, 'string', \Tests\Crmplease\Coder\fixtures\BarClass::class, \Tests\Crmplease\Coder\fixtures\BarClass::TEST, Rule::unique('countries')->ignore($country->getKey())],
 ];

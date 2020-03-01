@@ -2,33 +2,33 @@ services:
   _defaults:
     autowire: true
 
-  CrmPlease\Coder\Coder:
+  Crmplease\Coder\Coder:
     public: true
-  CrmPlease\Coder\RectorRunner: null
+  Crmplease\Coder\RectorRunner: null
 
   # rector helpers
-  CrmPlease\Coder\Helper\AddToArrayByKeyHelper: null
-  CrmPlease\Coder\Helper\AddToArrayByOrderHelper: null
-  CrmPlease\Coder\Helper\CheckMethodHelper: null
-  CrmPlease\Coder\Helper\ConvertFromAstHelper: null
-  CrmPlease\Coder\Helper\ConvertToAstHelper: null
-  CrmPlease\Coder\Helper\GetPropertyPropertyHelper: null
-  CrmPlease\Coder\Helper\NameNodeHelper: null
-  CrmPlease\Coder\Helper\NodeArrayHelper: null
+  Crmplease\Coder\Helper\AddToArrayByKeyHelper: null
+  Crmplease\Coder\Helper\AddToArrayByOrderHelper: null
+  Crmplease\Coder\Helper\CheckMethodHelper: null
+  Crmplease\Coder\Helper\ConvertFromAstHelper: null
+  Crmplease\Coder\Helper\ConvertToAstHelper: null
+  Crmplease\Coder\Helper\GetPropertyPropertyHelper: null
+  Crmplease\Coder\Helper\NameNodeHelper: null
+  Crmplease\Coder\Helper\NodeArrayHelper: null
 
   # rectors
-  CrmPlease\Coder\Rector\AddToFileReturnArrayByOrderRector: null
-  CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector: null
-  CrmPlease\Coder\Rector\AddToPropertyArrayByOrderRector: null
-  CrmPlease\Coder\Rector\AddToFileReturnArrayByKeyRector: null
-  CrmPlease\Coder\Rector\AddToReturnArrayByKeyRector: null
-  CrmPlease\Coder\Rector\AddToPropertyArrayByKeyRector: null
-  CrmPlease\Coder\Rector\AddPropertyToClassRector: null
-  CrmPlease\Coder\Rector\AddParameterToMethodRector: null
-  CrmPlease\Coder\Rector\AddCodeToMethodRector: null
-  CrmPlease\Coder\Rector\AddTraitToClassRector: null
-  CrmPlease\Coder\Rector\AddPhpdocParamToMethodRector: null
-  CrmPlease\Coder\Rector\ChangeClassParentRector: null
+  Crmplease\Coder\Rector\AddToFileReturnArrayByOrderRector: null
+  Crmplease\Coder\Rector\AddToReturnArrayByOrderRector: null
+  Crmplease\Coder\Rector\AddToPropertyArrayByOrderRector: null
+  Crmplease\Coder\Rector\AddToFileReturnArrayByKeyRector: null
+  Crmplease\Coder\Rector\AddToReturnArrayByKeyRector: null
+  Crmplease\Coder\Rector\AddToPropertyArrayByKeyRector: null
+  Crmplease\Coder\Rector\AddPropertyToClassRector: null
+  Crmplease\Coder\Rector\AddParameterToMethodRector: null
+  Crmplease\Coder\Rector\AddCodeToMethodRector: null
+  Crmplease\Coder\Rector\AddTraitToClassRector: null
+  Crmplease\Coder\Rector\AddPhpdocParamToMethodRector: null
+  Crmplease\Coder\Rector\ChangeClassParentRector: null
 
 parameters:
   auto_import_names: false

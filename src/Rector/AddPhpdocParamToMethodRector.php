@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder\Rector;
+namespace Crmplease\Coder\Rector;
 
-use CrmPlease\Coder\Helper\CheckMethodHelper;
+use Crmplease\Coder\Helper\CheckMethodHelper;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;

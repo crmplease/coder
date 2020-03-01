@@ -2,7 +2,7 @@
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
-namespace Tests\CrmPlease\Coder\fixtures\AddToReturnArrayByOrder;
+namespace Tests\Crmplease\Coder\fixtures\AddToReturnArrayByOrder;
 
 class SomeClass
 {

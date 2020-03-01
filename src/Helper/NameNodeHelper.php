@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder\Helper;
+namespace Crmplease\Coder\Helper;
 
-use CrmPlease\Coder\Rector\RectorException;
+use Crmplease\Coder\Rector\RectorException;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;

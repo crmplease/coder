@@ -2,10 +2,10 @@
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
-namespace Tests\CrmPlease\Coder\fixtures\ChangeClassParent;
+namespace Tests\Crmplease\Coder\fixtures\ChangeClassParent;
 
-use Tests\CrmPlease\Coder\fixtures\FooClass;
+use Tests\Crmplease\Coder\fixtures\FooClass;
 
-class ChangeParent extends \Tests\CrmPlease\Coder\fixtures\BarClass
+class ChangeParent extends \Tests\Crmplease\Coder\fixtures\BarClass
 {
 }

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\CrmPlease\Coder\Functional;
+namespace Tests\Crmplease\Coder\Functional;
 
-use CrmPlease\Coder\Rector\AddPropertyToClassRector;
-use Tests\CrmPlease\Coder\fixtures\BarClass;
-use Tests\CrmPlease\Coder\FunctionalTestCase;
+use Crmplease\Coder\Rector\AddPropertyToClassRector;
+use Tests\Crmplease\Coder\fixtures\BarClass;
+use Tests\Crmplease\Coder\FunctionalTestCase;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>

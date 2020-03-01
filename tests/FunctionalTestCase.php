@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\CrmPlease\Coder;
+namespace Tests\Crmplease\Coder;
 
-use CrmPlease\Coder\Coder;
+use Crmplease\Coder\Coder;
 use PHPUnit\Framework\Constraint\IsIdentical;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;

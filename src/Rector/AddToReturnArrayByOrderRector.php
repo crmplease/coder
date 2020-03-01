@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder\Rector;
+namespace Crmplease\Coder\Rector;
 
-use CrmPlease\Coder\Code;
-use CrmPlease\Coder\Constant;
-use CrmPlease\Coder\Helper\AddToArrayByOrderHelper;
-use CrmPlease\Coder\Helper\CheckMethodHelper;
-use CrmPlease\Coder\Helper\NodeArrayHelper;
+use Crmplease\Coder\Code;
+use Crmplease\Coder\Constant;
+use Crmplease\Coder\Helper\AddToArrayByOrderHelper;
+use Crmplease\Coder\Helper\CheckMethodHelper;
+use Crmplease\Coder\Helper\NodeArrayHelper;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;

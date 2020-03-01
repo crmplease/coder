@@ -2,7 +2,7 @@
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
-namespace Tests\CrmPlease\Coder\fixtures\AddToPropertyArrayByKey;
+namespace Tests\Crmplease\Coder\fixtures\AddToPropertyArrayByKey;
 
 class SomeClass
 {

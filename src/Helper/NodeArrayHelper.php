@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder\Helper;
+namespace Crmplease\Coder\Helper;
 
-use CrmPlease\Coder\Constant;
-use CrmPlease\Coder\Rector\RectorException;
+use Crmplease\Coder\Constant;
+use Crmplease\Coder\Rector\RectorException;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Stmt\PropertyProperty;

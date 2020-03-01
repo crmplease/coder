@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\CrmPlease\Coder\Functional;
+namespace Tests\Crmplease\Coder\Functional;
 
-use Tests\CrmPlease\Coder\fixtures\BarTrait;
-use Tests\CrmPlease\Coder\fixtures\FooTrait;
-use Tests\CrmPlease\Coder\FunctionalTestCase;
+use Tests\Crmplease\Coder\fixtures\BarTrait;
+use Tests\Crmplease\Coder\fixtures\FooTrait;
+use Tests\Crmplease\Coder\FunctionalTestCase;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>

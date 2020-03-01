@@ -2,9 +2,9 @@
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
-namespace Tests\CrmPlease\Coder\fixtures\AddTraitToClass;
+namespace Tests\Crmplease\Coder\fixtures\AddTraitToClass;
 
-use Tests\CrmPlease\Coder\fixtures\FooTrait;
+use Tests\Crmplease\Coder\fixtures\FooTrait;
 
 class DuplicateTrait
 {

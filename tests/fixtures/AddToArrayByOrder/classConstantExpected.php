@@ -3,7 +3,7 @@
  * @author Mougrim <rinat@mougrim.ru>
  */
 
-use Tests\CrmPlease\Coder\fixtures\FooClass;
+use Tests\Crmplease\Coder\fixtures\FooClass;
 
 return [
     null,
@@ -23,5 +23,5 @@ return [
     'test',
     FooClass::class,
     FooClass::TEST,
-    \Tests\CrmPlease\Coder\fixtures\BarClass::class,
+    \Tests\Crmplease\Coder\fixtures\BarClass::class,
 ];

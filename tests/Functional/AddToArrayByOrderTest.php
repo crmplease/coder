@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\CrmPlease\Coder\Functional;
+namespace Tests\Crmplease\Coder\Functional;
 
-use CrmPlease\Coder\Code;
-use CrmPlease\Coder\Constant;
-use Tests\CrmPlease\Coder\FunctionalTestCase;
+use Crmplease\Coder\Code;
+use Crmplease\Coder\Constant;
+use Tests\Crmplease\Coder\FunctionalTestCase;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
@@ -163,7 +163,7 @@ class AddToArrayByOrderTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
-            new Constant('\Tests\CrmPlease\Coder\fixtures\BarClass::class')
+            new Constant('\Tests\Crmplease\Coder\fixtures\BarClass::class')
         );
         $this->assertFixture($fixture);
     }
@@ -175,7 +175,7 @@ class AddToArrayByOrderTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
-            new Constant('\Tests\CrmPlease\Coder\fixtures\FooClass::class')
+            new Constant('\Tests\Crmplease\Coder\fixtures\FooClass::class')
         );
         $this->assertFixture($fixture);
     }
@@ -187,7 +187,7 @@ class AddToArrayByOrderTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
-            new Constant('\Tests\CrmPlease\Coder\fixtures\BarClass::TEST')
+            new Constant('\Tests\Crmplease\Coder\fixtures\BarClass::TEST')
         );
         $this->assertFixture($fixture);
     }
@@ -199,7 +199,7 @@ class AddToArrayByOrderTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
-            new Constant('\Tests\CrmPlease\Coder\fixtures\FooClass::TEST')
+            new Constant('\Tests\Crmplease\Coder\fixtures\FooClass::TEST')
         );
         $this->assertFixture($fixture);
     }
@@ -226,8 +226,8 @@ class AddToArrayByOrderTest extends FunctionalTestCase
             [
                 2,
                 'string',
-                new Constant('\Tests\CrmPlease\Coder\fixtures\BarClass::class'),
-                new Constant('\Tests\CrmPlease\Coder\fixtures\BarClass::TEST'),
+                new Constant('\Tests\Crmplease\Coder\fixtures\BarClass::class'),
+                new Constant('\Tests\Crmplease\Coder\fixtures\BarClass::TEST'),
                 new Code('Rule::unique(\'countries\')->ignore($country->getKey())'),
             ]
         );

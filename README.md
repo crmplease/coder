@@ -15,7 +15,7 @@ composer.phar require crmplease/coder:dev-master --dev
 
 The facade class of this library is [`Coder`](src/Coder.php), you need to just create it and call methods, example:
 ```php
-use CrmPlease\Coder\Coder;
+use Crmplease\Coder\Coder;
 
 $coder = Coder::create();
 $coder->addToFileReturnArrayByOrder(
@@ -61,14 +61,14 @@ Parts of the path can be same as key:
 
 If you need to pass code, which will be added as is, then you can use [`Code`](src/Code.php) class:
 ```php
-use CrmPlease\Coder\Code;
+use Crmplease\Coder\Code;
 
 new Code('$a = $b;');
 ```
 
 If you need to pass some constant, the you can use [`Constant`](src/Constant.php) class :
 ```php
-use CrmPlease\Coder\Constant;
+use Crmplease\Coder\Constant;
 
 new Constant('\Some\ClassName::class');
 ```
@@ -390,7 +390,7 @@ class ClassName
 ### Add property to class
 
 ```php
-use CrmPlease\Coder\Rector\AddPropertyToClassRector;
+use Crmplease\Coder\Rector\AddPropertyToClassRector;
 
 $coder->addPropertyToClass(
     '/path/to/ClassName.php',
@@ -608,8 +608,8 @@ class ClassName extends \Some\OtherClass {}
 
 More complex example with constants and code:
 ```php
-use CrmPlease\Coder\Code;
-use CrmPlease\Coder\Constant;
+use Crmplease\Coder\Code;
+use Crmplease\Coder\Constant;
 
 $coder->addToFileReturnArrayByOrder(
     '/path/to/file.php',
@@ -670,13 +670,13 @@ You can run Rector using command line interface:
 ```bash
 vendor/bin/rector process --config path/to/project/rector.yaml\\
    --autoload-file path/to/project/vendor/autoload.php\\
-   --only "\CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector"\\
+   --only "\Crmplease\Coder\Rector\AddToReturnArrayByOrderRector"\\
    path/to/project/Path/To/Class.php
 ```
 
 But command line interface doesn't allow to pass parameters to rectors. You can pass parameters using setters in config file [rector.yaml](rector.yaml) config. For example:
 ```yaml
-  CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector:
+  Crmplease\Coder\Rector\AddToReturnArrayByOrderRector:
     calls:
       - method: setMethod
         arguments:

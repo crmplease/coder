@@ -12,12 +12,12 @@
     },
     "autoload": {
         "psr-4": {
-            "CrmPlease\\Coder\\": "src/"
+            "Crmplease\\Coder\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\CrmPlease\\Coder\\": "tests"
+            "Tests\\Crmplease\\Coder\\": "tests"
         }
     }
 }

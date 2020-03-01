@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder\Rector;
+namespace Crmplease\Coder\Rector;
 
-use CrmPlease\Coder\Helper\NameNodeHelper;
+use Crmplease\Coder\Helper\NameNodeHelper;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;

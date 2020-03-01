@@ -3,7 +3,7 @@
  * @author Mougrim <rinat@mougrim.ru>
  */
 
-use Tests\CrmPlease\Coder\fixtures\FooClass;
+use Tests\Crmplease\Coder\fixtures\FooClass;
 
 return [
     null,

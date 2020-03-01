@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\CrmPlease\Coder\Functional;
+namespace Tests\Crmplease\Coder\Functional;
 
-use CrmPlease\Coder\Constant;
-use Tests\CrmPlease\Coder\FunctionalTestCase;
+use Crmplease\Coder\Constant;
+use Tests\Crmplease\Coder\FunctionalTestCase;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
@@ -96,7 +96,7 @@ class AddToArrayByKeyTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByKey(
             $this->createFixtureFile($fixture),
             [],
-            new Constant('\Tests\CrmPlease\Coder\fixtures\BarClass::class'),
+            new Constant('\Tests\Crmplease\Coder\fixtures\BarClass::class'),
             'bar class'
         );
         $this->assertFixture($fixture);
@@ -109,7 +109,7 @@ class AddToArrayByKeyTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByKey(
             $this->createFixtureFile($fixture),
             [],
-            new Constant('\Tests\CrmPlease\Coder\fixtures\FooClass::class'),
+            new Constant('\Tests\Crmplease\Coder\fixtures\FooClass::class'),
             'foo class replaced'
         );
         $this->assertFixture($fixture);
@@ -122,7 +122,7 @@ class AddToArrayByKeyTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByKey(
             $this->createFixtureFile($fixture),
             [],
-            new Constant('\Tests\CrmPlease\Coder\fixtures\FooClass::class'),
+            new Constant('\Tests\Crmplease\Coder\fixtures\FooClass::class'),
             'foo class'
         );
         $this->assertFixture($fixture);
@@ -135,7 +135,7 @@ class AddToArrayByKeyTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByKey(
             $this->createFixtureFile($fixture),
             [],
-            new Constant('\Tests\CrmPlease\Coder\fixtures\BarClass::TEST'),
+            new Constant('\Tests\Crmplease\Coder\fixtures\BarClass::TEST'),
             'bar constant'
         );
         $this->assertFixture($fixture);
@@ -148,7 +148,7 @@ class AddToArrayByKeyTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByKey(
             $this->createFixtureFile($fixture),
             [],
-            new Constant('\Tests\CrmPlease\Coder\fixtures\FooClass::TEST'),
+            new Constant('\Tests\Crmplease\Coder\fixtures\FooClass::TEST'),
             'foo constant replaced'
         );
         $this->assertFixture($fixture);
@@ -161,7 +161,7 @@ class AddToArrayByKeyTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByKey(
             $this->createFixtureFile($fixture),
             [],
-            new Constant('\Tests\CrmPlease\Coder\fixtures\FooClass::TEST'),
+            new Constant('\Tests\Crmplease\Coder\fixtures\FooClass::TEST'),
             'foo constant'
         );
         $this->assertFixture($fixture);

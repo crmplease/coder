@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder\Helper;
+namespace Crmplease\Coder\Helper;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;

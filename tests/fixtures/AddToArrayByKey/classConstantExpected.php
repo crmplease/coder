@@ -3,7 +3,7 @@
  * @author Mougrim <rinat@mougrim.ru>
  */
 
-use Tests\CrmPlease\Coder\fixtures\FooClass;
+use Tests\Crmplease\Coder\fixtures\FooClass;
 
 return [
     0 => 'int0',
@@ -12,5 +12,5 @@ return [
     'key1' => 'value1',
     FooClass::class => 'foo class',
     FooClass::TEST => 'foo constant',
-    \Tests\CrmPlease\Coder\fixtures\BarClass::class => 'bar class',
+    \Tests\Crmplease\Coder\fixtures\BarClass::class => 'bar class',
 ];

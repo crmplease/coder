@@ -2,9 +2,9 @@
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
-namespace Tests\CrmPlease\Coder\fixtures\InjectDependency;
+namespace Tests\Crmplease\Coder\fixtures\InjectDependency;
 
-use Tests\CrmPlease\Coder\fixtures\FooClass;
+use Tests\Crmplease\Coder\fixtures\FooClass;
 
 class PropertyExists
 {

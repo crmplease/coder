@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder\Rector;
+namespace Crmplease\Coder\Rector;
 
 use Exception;
 

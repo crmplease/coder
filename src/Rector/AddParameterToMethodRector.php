@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder\Rector;
+namespace Crmplease\Coder\Rector;
 
-use CrmPlease\Coder\Code;
-use CrmPlease\Coder\Constant;
-use CrmPlease\Coder\Helper\CheckMethodHelper;
-use CrmPlease\Coder\Helper\ConvertToAstHelper;
-use CrmPlease\Coder\Helper\NameNodeHelper;
+use Crmplease\Coder\Code;
+use Crmplease\Coder\Constant;
+use Crmplease\Coder\Helper\CheckMethodHelper;
+use Crmplease\Coder\Helper\ConvertToAstHelper;
+use Crmplease\Coder\Helper\NameNodeHelper;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder;
+namespace Crmplease\Coder;
 
 use function constant;
 use function explode;

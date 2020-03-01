@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder;
+namespace Crmplease\Coder;
 
 use Rector\Core\Configuration\Configuration;
 use Rector\Core\DependencyInjection\RectorContainerFactory;

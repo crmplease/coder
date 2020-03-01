@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder;
+namespace Crmplease\Coder;
 
-use CrmPlease\Coder\Rector\RectorException;
+use Crmplease\Coder\Rector\RectorException;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\AppliedRectorCollector;

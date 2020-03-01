@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder;
+namespace Crmplease\Coder;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>

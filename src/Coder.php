@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace CrmPlease\Coder;
+namespace Crmplease\Coder;
 
-use CrmPlease\Coder\Rector\AddCodeToMethodRector;
-use CrmPlease\Coder\Rector\AddParameterToMethodRector;
-use CrmPlease\Coder\Rector\AddPhpdocParamToMethodRector;
-use CrmPlease\Coder\Rector\AddPropertyToClassRector;
-use CrmPlease\Coder\Rector\AddToFileReturnArrayByKeyRector;
-use CrmPlease\Coder\Rector\AddToFileReturnArrayByOrderRector;
-use CrmPlease\Coder\Rector\AddToPropertyArrayByKeyRector;
-use CrmPlease\Coder\Rector\AddToPropertyArrayByOrderRector;
-use CrmPlease\Coder\Rector\AddToReturnArrayByKeyRector;
-use CrmPlease\Coder\Rector\AddToReturnArrayByOrderRector;
-use CrmPlease\Coder\Rector\AddTraitToClassRector;
-use CrmPlease\Coder\Rector\ChangeClassParentRector;
-use CrmPlease\Coder\Rector\RectorException;
+use Crmplease\Coder\Rector\AddCodeToMethodRector;
+use Crmplease\Coder\Rector\AddParameterToMethodRector;
+use Crmplease\Coder\Rector\AddPhpdocParamToMethodRector;
+use Crmplease\Coder\Rector\AddPropertyToClassRector;
+use Crmplease\Coder\Rector\AddToFileReturnArrayByKeyRector;
+use Crmplease\Coder\Rector\AddToFileReturnArrayByOrderRector;
+use Crmplease\Coder\Rector\AddToPropertyArrayByKeyRector;
+use Crmplease\Coder\Rector\AddToPropertyArrayByOrderRector;
+use Crmplease\Coder\Rector\AddToReturnArrayByKeyRector;
+use Crmplease\Coder\Rector\AddToReturnArrayByOrderRector;
+use Crmplease\Coder\Rector\AddTraitToClassRector;
+use Crmplease\Coder\Rector\ChangeClassParentRector;
+use Crmplease\Coder\Rector\RectorException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Symplify\SmartFileSystem\Exception\FileNotFoundException;
 
