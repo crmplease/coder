@@ -210,6 +210,105 @@ class Coder
     }
 
     /**
+     * @param string $file
+     * @param array $path
+     * @param array $array
+     *
+     * @throws RectorException
+     * @throws ShouldNotHappenException
+     * @throws FileNotFoundException
+     */
+    public function addToFileReturnArray(string $file, array $path, array $array): void
+    {
+        $index = 0;
+        foreach ($array as $key => $value) {
+            if ($key === $index) {
+                $index++;
+                $this->addToFileReturnArrayByOrder(
+                    $file,
+                    $path,
+                    $value
+                );
+            } else {
+                $this->addToFileReturnArrayByKey(
+                    $file,
+                    $path,
+                    $key,
+                    $value
+                );
+            }
+        }
+    }
+
+    /**
+     * @param string $file
+     * @param string $method
+     * @param array $path
+     * @param array $array
+     *
+     * @throws RectorException
+     * @throws ShouldNotHappenException
+     * @throws FileNotFoundException
+     */
+    public function addToReturnArray(string $file, string $method, array $path, array $array): void
+    {
+        $index = 0;
+        foreach ($array as $key => $value) {
+            if ($key === $index) {
+                $index++;
+                $this->addToReturnArrayByOrder(
+                    $file,
+                    $method,
+                    $path,
+                    $value
+                );
+            } else {
+                $this->addToReturnArrayByKey(
+                    $file,
+                    $method,
+                    $path,
+                    $key,
+                    $value
+                );
+            }
+        }
+    }
+
+    /**
+     * @param string $file
+     * @param string $property
+     * @param array $path
+     * @param array $array
+     *
+     * @throws FileNotFoundException
+     * @throws RectorException
+     * @throws ShouldNotHappenException
+     */
+    public function addToPropertyArray(string $file, string $property, array $path, array $array): void
+    {
+        $index = 0;
+        foreach ($array as $key => $value) {
+            if ($key === $index) {
+                $index++;
+                $this->addToPropertyArrayByOrder(
+                    $file,
+                    $property,
+                    $path,
+                    $value
+                );
+            } else {
+                $this->addToPropertyArrayByKey(
+                    $file,
+                    $property,
+                    $path,
+                    $key,
+                    $value
+                );
+            }
+        }
+    }
+
+    /**
      * @see AddPropertyToClassRector::VISIBILITIES_TO_AST_FLAGS
      *
      * @param string $file
