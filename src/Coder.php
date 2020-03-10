@@ -450,6 +450,24 @@ class Coder
 
     /**
      * @param string $file
+     * @param PhpdocProperty[] $properties
+     *
+     * @throws FileNotFoundException
+     * @throws ShouldNotHappenException
+     * @throws RectorException
+     */
+    public function addPhpdocPropertiesToClass(string $file, array $properties): void
+    {
+        foreach ($properties as $property) {
+            $this->addPhpdocPropertyToClass(
+                $file,
+                $property
+            );
+        }
+    }
+
+    /**
+     * @param string $file
      * @param string $parentClass
      *
      * @throws FileNotFoundException

@@ -551,6 +551,57 @@ class ClassName
 }
 ```
 
+### Add phpdoc property to class
+
+```php
+use \Crmplease\Coder\PhpdocProperty;
+$coder->addPhpdocPropertyToClass(
+    '/path/to/ClassName.php',
+    new PhpdocProperty(
+        // property name
+        'newProperty',
+        // property type, default is mixed
+        'string|null',
+        // description for property
+        'description'
+    )
+);
+```
+
+If phpdoc for property already exists, then it will be updated.
+
+Example:
+```php
+// file /path/to/ClassName.php
+/**
+ * @property int $existsProperty
+ */
+class ClassName {}
+```
+
+Became
+```php
+// file /path/to/ClassName.php
+/**
+ * @property int $existsProperty
+ * @property string|null $newProperty some description
+ */
+class ClassName {}
+```
+
+You can add several properties:
+
+```php
+use \Crmplease\Coder\PhpdocProperty;
+$coder->addPhpdocPropertiesToClass(
+    '/path/to/ClassName.php',
+    [
+        new PhpdocProperty('newProperty1'),
+        new PhpdocProperty('newProperty2'),
+    ]
+);
+```
+
 ### Add trait to class
 
 ```php
@@ -767,6 +818,13 @@ Config for AddPhpdocParamToMethodRector:
 - setParameter: parameter name which need to add to phpdoc
 - setParameterType: parameter type which need to add to phpdoc, can be class name started with '\\' or scalar type, collections, union type
 - setDescription: description for param in phpdoc
+
+### AddPhpdocPropertyToClassRector
+
+Config for AddPhpdocParamToMethodRector:
+- setProperty: property name which need to add to phpdoc
+- setPropertyType: property type which need to add to phpdoc, can be class name started with '\\' or scalar type, collections, union type
+- setDescription: description for property in phpdoc
 
 ### ChangeClassParentRector
 

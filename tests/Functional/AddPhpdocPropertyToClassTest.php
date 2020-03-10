@@ -66,4 +66,41 @@ class AddPhpdocPropertyToClassTest extends FunctionalTestCase
         );
         $this->assertFixture($fixture);
     }
+
+    public function testWithoutPhpdoc(): void
+    {
+        $fixture = 'WithoutPhpdoc';
+        $coder = $this->getCoder();
+        $coder->addPhpdocPropertyToClass(
+            $this->createFixtureFile($fixture),
+            new PhpdocProperty(
+                'newProperty',
+                'string|null',
+                'description'
+            )
+        );
+        $this->assertFixture($fixture);
+    }
+
+    public function testSeveralProperties(): void
+    {
+        $fixture = 'SeveralProperties';
+        $coder = $this->getCoder();
+        $coder->addPhpdocPropertiesToClass(
+            $this->createFixtureFile($fixture),
+            [
+                new PhpdocProperty(
+                    'replaceProperty',
+                    'string|null',
+                    'replace description'
+                ),
+                new PhpdocProperty(
+                    'newProperty',
+                    '\\' . FooClass::class,
+                    'new description'
+                ),
+            ]
+        );
+        $this->assertFixture($fixture);
+    }
 }
