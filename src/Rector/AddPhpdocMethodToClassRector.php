@@ -4,13 +4,15 @@ declare(strict_types=1);
 namespace Crmplease\Coder\Rector;
 
 use Crmplease\Coder\Helper\PhpdocHelper;
+use Crmplease\Coder\PhpdocMethodParameter;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueParameterNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareInvalidTagValueNode;
+use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareMethodTagValueNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
-use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePropertyTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
@@ -24,7 +26,7 @@ use function get_class;
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
-class AddPhpdocPropertyToClassRector extends AbstractRector
+class AddPhpdocMethodToClassRector extends AbstractRector
 {
     private $phpdocHelper;
     private $symfonyStyle;
@@ -32,8 +34,13 @@ class AddPhpdocPropertyToClassRector extends AbstractRector
     private $phpDocParser;
     private $lexer;
     private $showProgressBar = true;
-    private $property = '';
-    private $propertyType = '';
+    private $method = '';
+    private $returnType = '';
+    private $isStatic = false;
+    /**
+     * @var PhpdocMethodParameter[]
+     */
+    private $parameters = [];
     private $description = '';
 
     public function __construct(
@@ -64,24 +71,47 @@ class AddPhpdocPropertyToClassRector extends AbstractRector
     }
 
     /**
-     * @param string $property
+     * @param string $method
      *
      * @return $this
      */
-    public function setProperty(string $property): self
+    public function setMethod(string $method): self
     {
-        $this->property = $property;
+        $this->method = $method;
         return $this;
     }
 
     /**
-     * @param string $propertyType class name started with '\\', scalar type, collections, union type
+     * @param string $returnType class name started with '\\', scalar type, collections, union type
      *
      * @return $this
      */
-    public function setPropertyType(?string $propertyType): self
+    public function setReturnType(?string $returnType): self
     {
-        $this->propertyType = $propertyType;
+        $this->returnType = $returnType;
+        return $this;
+    }
+
+    /**
+     * @param bool $isStatic true if method should be static
+     *
+     * @return $this
+     */
+    public function setIsStatic(bool $isStatic): self
+    {
+        $this->isStatic = $isStatic;
+        return $this;
+    }
+
+    /**
+     * @param PhpdocMethodParameter[] $parameters
+     *
+     * @return $this
+     */
+    public function setParameters(array $parameters): self
+    {
+        $this->parameters = $parameters;
+
         return $this;
     }
 
@@ -98,11 +128,11 @@ class AddPhpdocPropertyToClassRector extends AbstractRector
 
     public function getDefinition(): RectorDefinition
     {
-        return new RectorDefinition('Add to phpdoc @property property "property2" with type "string" and description "description" to class with check duplicates', [
+        return new RectorDefinition('Add to phpdoc @method method "method2" with return type "string" and description "description" to class with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 /**
- * @property int $property1
+ * @method int method1()
  */
 class SomeClass
 {
@@ -111,8 +141,8 @@ PHP
                 ,
                 <<<'PHP'
 /**
- * @property int $property1
- * @property string $property2 description
+ * @method int method1()
+ * @method string method2() description
  */
 class SomeClass
 {
@@ -140,40 +170,59 @@ PHP
             return null;
         }
 
-        $propertyType = $this->propertyType;
-        $propertyType = $this->phpdocHelper->simplifyFqnForType($propertyType, $node);
-        $typeTagNode = $this->phpdocHelper->createTypeTagNodeByString($propertyType);
+        $returnType = $this->returnType;
+        $returnType = $this->phpdocHelper->simplifyFqnForType($returnType, $node);
+        $returnTypeTagNode = $this->phpdocHelper->createTypeTagNodeByString($returnType);
+        $parameters = [];
+        foreach ($this->parameters as $parameter) {
+            $parameters[] = new MethodTagValueParameterNode(
+                $this->phpdocHelper->createTypeTagNodeByString(
+                    $this->phpdocHelper->simplifyFqnForType(
+                        $parameter->getType(),
+                        $node
+                    )
+                ),
+                false,
+                false,
+                "\${$parameter->getName()}",
+                $parameter->hasDefault() ? $this->phpdocHelper->simpleValueOrArrayToAst($parameter->getDefault()) : null
+            );
+        }
 
         /** @var PhpDocInfo $phpDocInfo */
         $phpDocInfo = $node->getAttribute(AttributeKey::PHP_DOC_INFO);
-        $propertyTagNodes = $phpDocInfo->getTagsByName('property');
-        foreach ($propertyTagNodes as $propertyTagNode) {
-            $value = $propertyTagNode->value;
+        $methodTagNodes = $phpDocInfo->getTagsByName('method');
+        foreach ($methodTagNodes as $methodTagNode) {
+            $value = $methodTagNode->value;
             if ($value instanceof AttributeAwareInvalidTagValueNode) {
                 if ($this->showProgressBar) {
-                    $this->symfonyStyle->warning("Invalid property {$value->value} Phpdoc: {$value->exception->getMessage()}");
+                    $this->symfonyStyle->warning("Invalid method {$value->value} Phpdoc: {$value->exception->getMessage()}");
                 }
                 continue;
             }
-            if (!$value instanceof AttributeAwarePropertyTagValueNode) {
+            if (!$value instanceof AttributeAwareMethodTagValueNode) {
                 if ($this->showProgressBar) {
-                    $this->symfonyStyle->warning('Unknown property Phpdoc class: '. get_class($value));
+                    $this->symfonyStyle->warning('Unknown method Phpdoc class: '. get_class($value));
                 }
                 continue;
             }
-            if ($value->propertyName === "\${$this->property}") {
+            if ($value->methodName === $this->method) {
+                $value->returnType = $returnTypeTagNode;
+                $value->isStatic = $this->isStatic;
+                $value->parameters = $parameters;
                 $value->description = $this->description;
-                $value->type = $typeTagNode;
                 return $node;
             }
         }
 
         $phpDocInfo->addPhpDocTagNode(
             new AttributeAwarePhpDocTagNode(
-                '@property',
-                new AttributeAwarePropertyTagValueNode(
-                    $typeTagNode,
-                    "\${$this->property}",
+                '@method',
+                new AttributeAwareMethodTagValueNode(
+                    $this->isStatic,
+                    $returnTypeTagNode,
+                    $this->method,
+                    $parameters,
                     $this->description
                 )
             )

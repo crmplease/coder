@@ -5,6 +5,7 @@ namespace Crmplease\Coder;
 
 use Crmplease\Coder\Rector\AddCodeToMethodRector;
 use Crmplease\Coder\Rector\AddParameterToMethodRector;
+use Crmplease\Coder\Rector\AddPhpdocMethodToClassRector;
 use Crmplease\Coder\Rector\AddPhpdocParamToMethodRector;
 use Crmplease\Coder\Rector\AddPhpdocPropertyToClassRector;
 use Crmplease\Coder\Rector\AddPropertyToClassRector;
@@ -38,6 +39,7 @@ class Coder
     private $addTraitToClassRector;
     private $addPhpdocParamToMethodRector;
     private $addPhpdocPropertyToClassRector;
+    private $addPhpdocMethodToClassRector;
     private $changeClassParentRector;
 
     /**
@@ -66,6 +68,7 @@ class Coder
         AddTraitToClassRector $addTraitToClassRector,
         AddPhpdocParamToMethodRector $addPhpdocParamToMethodRector,
         AddPhpdocPropertyToClassRector $addPhpdocPropertyToClassRector,
+        AddPhpdocMethodToClassRector $addPhpdocMethodToClassRector,
         ChangeClassParentRector $changeClassParentRector
     )
     {
@@ -82,6 +85,7 @@ class Coder
         $this->addTraitToClassRector = $addTraitToClassRector;
         $this->addPhpdocParamToMethodRector = $addPhpdocParamToMethodRector;
         $this->addPhpdocPropertyToClassRector = $addPhpdocPropertyToClassRector;
+        $this->addPhpdocMethodToClassRector = $addPhpdocMethodToClassRector;
         $this->changeClassParentRector = $changeClassParentRector;
     }
 
@@ -94,6 +98,7 @@ class Coder
     {
         $this->rectorRunner->setShowProgressBar($showProgressBar);
         $this->addPhpdocPropertyToClassRector->setShowProgressBar($showProgressBar);
+        $this->addPhpdocMethodToClassRector->setShowProgressBar($showProgressBar);
 
         return $this;
     }
@@ -462,6 +467,43 @@ class Coder
             $this->addPhpdocPropertyToClass(
                 $file,
                 $property
+            );
+        }
+    }
+
+    /**
+     * @param string $file
+     * @param PhpdocMethod $method
+     *
+     * @throws FileNotFoundException
+     * @throws ShouldNotHappenException
+     * @throws RectorException
+     */
+    public function addPhpdocMethodToClass(string $file, PhpdocMethod $method): void
+    {
+        $this->addPhpdocMethodToClassRector
+            ->setMethod($method->getName())
+            ->setReturnType($method->getReturnType())
+            ->setIsStatic($method->isStatic())
+            ->setParameters($method->getParameters())
+            ->setDescription($method->getDescription());
+        $this->rectorRunner->run($file, $this->addPhpdocMethodToClassRector);
+    }
+
+    /**
+     * @param string $file
+     * @param PhpdocMethod[] $methods
+     *
+     * @throws FileNotFoundException
+     * @throws ShouldNotHappenException
+     * @throws RectorException
+     */
+    public function addPhpdocMethodsToClass(string $file, array $methods): void
+    {
+        foreach ($methods as $method) {
+            $this->addPhpdocMethodToClass(
+                $file,
+                $method
             );
         }
     }

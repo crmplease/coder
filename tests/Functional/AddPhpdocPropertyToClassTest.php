@@ -42,6 +42,20 @@ class AddPhpdocPropertyToClassTest extends FunctionalTestCase
         $this->assertFixture($fixture);
     }
 
+    public function testExistsProperty(): void
+    {
+        $fixture = 'ExistsProperty';
+        $coder = $this->getCoder();
+        $coder->addPhpdocPropertyToClass(
+            $this->createFixtureFile($fixture),
+            new PhpdocProperty(
+                'existsProperty',
+                'int'
+            )
+        );
+        $this->assertFixture($fixture);
+    }
+
     public function testNewObjectProperty(): void
     {
         $fixture = 'NewObjectProperty';

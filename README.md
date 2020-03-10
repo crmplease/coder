@@ -563,7 +563,7 @@ $coder->addPhpdocPropertyToClass(
         // property type, default is mixed
         'string|null',
         // description for property
-        'description'
+        'some description'
     )
 );
 ```
@@ -598,6 +598,73 @@ $coder->addPhpdocPropertiesToClass(
     [
         new PhpdocProperty('newProperty1'),
         new PhpdocProperty('newProperty2'),
+    ]
+);
+```
+
+### Add phpdoc method to class
+
+```php
+use \Crmplease\Coder\PhpdocMethod;
+use \Crmplease\Coder\PhpdocMethodParameter;
+$coder->addPhpdocMethodToClass(
+    '/path/to/ClassName.php',
+    new PhpdocMethod(
+        // method name
+        'newMethod',
+        // return type, default is mixed
+        'string|null',
+        // true if should be static
+        false,
+        // array of parameters
+        [
+            new PhpdocMethodParameter(
+                // parameter name
+                'parameter1',
+                // parameter type
+                 'int',
+                // has default value if true
+                true,
+                // default value
+                0
+            ),
+        ],
+        // description for method
+        'some description'
+    )
+);
+```
+
+If phpdoc for method already exists, then it will be updated.
+
+Example:
+```php
+// file /path/to/ClassName.php
+/**
+ * @method int existsMethod()
+ */
+class ClassName {}
+```
+
+Became
+```php
+// file /path/to/ClassName.php
+/**
+ * @method int existsMethod()
+ * @method string|null newMethod(int $parameter1 = 0) some description
+ */
+class ClassName {}
+```
+
+You can add several methods:
+
+```php
+use \Crmplease\Coder\PhpdocMethod;
+$coder->addPhpdocMethodsToClass(
+    '/path/to/ClassName.php',
+    [
+        new PhpdocMethod('newMethod1'),
+        new PhpdocMethod('newMethod2'),
     ]
 );
 ```
@@ -821,10 +888,19 @@ Config for AddPhpdocParamToMethodRector:
 
 ### AddPhpdocPropertyToClassRector
 
-Config for AddPhpdocParamToMethodRector:
+Config for AddPhpdocPropertyToClassRector:
 - setProperty: property name which need to add to phpdoc
 - setPropertyType: property type which need to add to phpdoc, can be class name started with '\\' or scalar type, collections, union type
 - setDescription: description for property in phpdoc
+
+### AddPhpdocMethodToClassRector
+
+Config for AddPhpdocMethodToClassRector:
+- setMethod: method name which need to add to phpdoc
+- setReturnType: method return type which need to add to phpdoc, can be class name started with '\\' or scalar type, collections, union type
+- setIsStatic: is method static or no, true or false, default false
+- setParameters: array of [`PhpdocMethodParameter`](src/PhpdocMethodParameter.php) objects
+- setDescription: description for method in phpdoc
 
 ### ChangeClassParentRector
 

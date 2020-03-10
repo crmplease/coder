@@ -38,7 +38,7 @@ class ConvertToAstHelper
     }
 
     /**
-     * @param string|float|int|bool|null $value
+     * @param Code|Constant|string|float|int|bool|null $value
      *
      * @return Expr
      * @throws RectorException
@@ -75,7 +75,7 @@ class ConvertToAstHelper
     }
 
     /**
-     * @param array|string|float|int|bool|null $value
+     * @param array|Code|Constant|string|float|int|bool|null $value
      *
      * @return Expr
      * @throws RectorException
