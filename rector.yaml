@@ -15,6 +15,7 @@ services:
   Crmplease\Coder\Helper\GetPropertyPropertyHelper: null
   Crmplease\Coder\Helper\NameNodeHelper: null
   Crmplease\Coder\Helper\NodeArrayHelper: null
+  Crmplease\Coder\Helper\PhpdocHelper: null
 
   # rectors
   Crmplease\Coder\Rector\AddToFileReturnArrayByOrderRector: null
@@ -28,6 +29,7 @@ services:
   Crmplease\Coder\Rector\AddCodeToMethodRector: null
   Crmplease\Coder\Rector\AddTraitToClassRector: null
   Crmplease\Coder\Rector\AddPhpdocParamToMethodRector: null
+  Crmplease\Coder\Rector\AddPhpdocPropertyToClassRector: null
   Crmplease\Coder\Rector\ChangeClassParentRector: null
 
 parameters:

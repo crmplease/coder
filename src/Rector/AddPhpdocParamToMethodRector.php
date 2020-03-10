@@ -4,37 +4,30 @@ declare(strict_types=1);
 namespace Crmplease\Coder\Rector;
 
 use Crmplease\Coder\Helper\CheckMethodHelper;
+use Crmplease\Coder\Helper\PhpdocHelper;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
-use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareParamTagValueNode;
-use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PHPStan\Type\FullyQualifiedObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\RectorDefinition\CodeSample;
 use Rector\Core\RectorDefinition\RectorDefinition;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
-use function count;
-use function explode;
-use function implode;
 use function ltrim;
-use function strpos;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
 class AddPhpdocParamToMethodRector extends AbstractRector
 {
+    private $phpdocHelper;
     private $parameterProvider;
     private $checkMethodHelper;
     private $phpDocParser;
@@ -45,12 +38,14 @@ class AddPhpdocParamToMethodRector extends AbstractRector
     private $description = '';
 
     public function __construct(
+        PhpdocHelper $phpDocHelper,
         ParameterProvider $parameterProvider,
         CheckMethodHelper $checkMethodHelper,
         PhpDocParser $phpDocParser,
         Lexer $lexer
     )
     {
+        $this->phpdocHelper = $phpDocHelper;
         $this->parameterProvider = $parameterProvider;
         $this->checkMethodHelper = $checkMethodHelper;
         $this->phpDocParser = $phpDocParser;
@@ -168,9 +163,9 @@ PHP
             throw new RectorException("Can't get parameter '{$this->parameter}' from method '{$this->method}'");
         }
 
-        $parameterType = $this->simplifyFqn($parameterType, $node);
+        $parameterType = $this->phpdocHelper->simplifyFqnForType($parameterType, $node);
 
-        $typeTagNode = $this->createTypeTagNodeByString($parameterType);
+        $typeTagNode = $this->phpdocHelper->createTypeTagNodeByString($parameterType);
         $parameterTagNode = $this->createPhpDocParamNode($typeTagNode, $parameterNode, $this->description);
 
         /** @var PhpDocInfo $phpDocInfo */
@@ -189,42 +184,6 @@ PHP
 
         $phpDocInfo->addPhpDocTagNode($parameterTagNode);
         return $node;
-    }
-
-    protected function simplifyFqn(string $unionType, Node $node): string
-    {
-        if (!$this->parameterProvider->provideParameter(Option::AUTO_IMPORT_NAMES)) {
-            return $unionType;
-        }
-        $types = explode('|', $unionType);
-        foreach ($types as &$type) {
-            if (strpos($type, '\\') === false) {
-                continue;
-            }
-
-            $this->addUseType(new FullyQualifiedObjectType(ltrim($type, '\\')), $node);
-            $parts = explode('\\', $type);
-            $type = $parts[count($parts) - 1];
-        }
-        unset($type);
-        return implode('|', $types);
-    }
-
-    protected function createTypeTagNodeByString(string $type) : TypeNode
-    {
-        if (!$type) {
-            return new IdentifierTypeNode('mixed');
-        }
-        $input = "/** @var {$type} \$name */";
-        $tokens = $this->lexer->tokenize($input);
-        $tokenIterator = new TokenIterator($tokens);
-        /** @var AttributeAwarePhpDocNode $phpDocNode */
-        $phpDocNode = $this->phpDocParser ->parse($tokenIterator);
-        $varTagValue = $phpDocNode->getVarTagValues()[0] ?? null;
-        if ($varTagValue === null) {
-            return new IdentifierTypeNode('mixed');
-        }
-        return $varTagValue->type;
     }
 
     protected function createPhpDocParamNode(TypeNode $typeNode, Param $parameterNode, string $description): AttributeAwarePhpDocTagNode

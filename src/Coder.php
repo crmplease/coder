@@ -6,6 +6,7 @@ namespace Crmplease\Coder;
 use Crmplease\Coder\Rector\AddCodeToMethodRector;
 use Crmplease\Coder\Rector\AddParameterToMethodRector;
 use Crmplease\Coder\Rector\AddPhpdocParamToMethodRector;
+use Crmplease\Coder\Rector\AddPhpdocPropertyToClassRector;
 use Crmplease\Coder\Rector\AddPropertyToClassRector;
 use Crmplease\Coder\Rector\AddToFileReturnArrayByKeyRector;
 use Crmplease\Coder\Rector\AddToFileReturnArrayByOrderRector;
@@ -36,6 +37,7 @@ class Coder
     private $addCodeToMethodRector;
     private $addTraitToClassRector;
     private $addPhpdocParamToMethodRector;
+    private $addPhpdocPropertyToClassRector;
     private $changeClassParentRector;
 
     /**
@@ -63,6 +65,7 @@ class Coder
         AddCodeToMethodRector $addCodeToMethodRector,
         AddTraitToClassRector $addTraitToClassRector,
         AddPhpdocParamToMethodRector $addPhpdocParamToMethodRector,
+        AddPhpdocPropertyToClassRector $addPhpdocPropertyToClassRector,
         ChangeClassParentRector $changeClassParentRector
     )
     {
@@ -78,6 +81,7 @@ class Coder
         $this->addCodeToMethodRector = $addCodeToMethodRector;
         $this->addTraitToClassRector = $addTraitToClassRector;
         $this->addPhpdocParamToMethodRector = $addPhpdocParamToMethodRector;
+        $this->addPhpdocPropertyToClassRector = $addPhpdocPropertyToClassRector;
         $this->changeClassParentRector = $changeClassParentRector;
     }
 
@@ -89,6 +93,7 @@ class Coder
     public function setShowProgressBar(bool $showProgressBar): self
     {
         $this->rectorRunner->setShowProgressBar($showProgressBar);
+        $this->addPhpdocPropertyToClassRector->setShowProgressBar($showProgressBar);
 
         return $this;
     }
@@ -424,6 +429,23 @@ class Coder
             ->setParameterType($parameterType)
             ->setDescription($description);
         $this->rectorRunner->run($file, $this->addPhpdocParamToMethodRector);
+    }
+
+    /**
+     * @param string $file
+     * @param PhpdocProperty $property
+     *
+     * @throws FileNotFoundException
+     * @throws ShouldNotHappenException
+     * @throws RectorException
+     */
+    public function addPhpdocPropertyToClass(string $file, PhpdocProperty $property): void
+    {
+        $this->addPhpdocPropertyToClassRector
+            ->setProperty($property->getName())
+            ->setPropertyType($property->getType())
+            ->setDescription($property->getDescription());
+        $this->rectorRunner->run($file, $this->addPhpdocPropertyToClassRector);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\CrmPlease\Coder\Functional;
+namespace Tests\Crmplease\Coder\Functional;
 
 use Tests\Crmplease\Coder\FunctionalTestCase;
 
