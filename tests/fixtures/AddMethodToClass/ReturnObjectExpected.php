@@ -1,0 +1,27 @@
+<?php
+declare(strict_types=1);
+
+namespace Tests\Crmplease\Coder\fixtures\AddMethodToClass;
+
+/**
+ * @author Mougrim <rinat@mougrim.ru>
+ */
+class ReturnObject
+{
+    /**
+     * Exists description
+     *
+     * @return int exists return description
+     */
+    public function existsMethod(): int
+    {
+        return 0;
+    }
+    /**
+     * New description
+     * @return \Tests\Crmplease\Coder\fixtures\FooClass new return description
+     */
+    public function newMethod(): \Tests\Crmplease\Coder\fixtures\FooClass
+    {
+    }
+}

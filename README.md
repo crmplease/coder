@@ -508,6 +508,75 @@ class ClassName
 }
 ```
 
+### Add method to class
+
+```php
+use Crmplease\Coder\Rector\AddMethodToClassRector;
+
+$coder->addMethodToClass(
+    '/path/to/ClassName.php',
+    // method name
+    'newMethod',
+    // method visibility, can be VISIBILITY_PRIVATE, VISIBILITY_PROTECTED or VISIBILITY_PUBLIC
+    AddMethodToClassRector::VISIBILITY_PUBLIC,
+    // pass true if method should be static
+    false,
+    // pass true if method should be abstract
+    false,
+    // pass true if method should be final
+    false,
+    // method return type
+    'int',
+    // return description
+    'return description',
+    // method description
+    'method description'
+);
+```
+
+If method exists, then signature and PhpDoc will be updated.
+
+Example:
+```php
+// file /path/to/ClassName.php
+class ClassName
+{
+    /**
+     * Exists description
+     *
+     * @return int exists return description
+     */
+    public function existsMethod(): int
+    {
+        return 0;
+    }
+}
+```
+Became:
+```php
+// file /path/to/ClassName.php
+class ClassName
+{
+    /**
+     * Exists description
+     *
+     * @return int exists return description
+     */
+    public function existsMethod(): int
+    {
+        return 0;
+    }
+    /**
+     * method description
+     * @return int return description
+     */
+    public function newMethod(): int
+    {
+        return 0;
+    }
+}
+```
+
 ### Add phpdoc param to method
 
 ```php
@@ -872,6 +941,18 @@ Config for AddParameterToMethodRector:
 Config for AddCodeToMethodRector:
 - setMethod: method name, to which need to add code
 - setCode: code which need to add
+
+### AddMethodToClassRector
+
+Config for AddMethodToClassRector:
+- setMethod: method name which need to add
+- setVisibility: method visibility 'public', 'protected' or 'private', default is 'private'
+- setIsStatic: is method static or no, true or false, default false
+- setIsAbstract: is method abstract or no, true or false, default false
+- setIsFinal: is method final or no, true or false, default false
+- setReturnType: method return type, can be class name started with '\\' or scalar type or void
+- setReturnDescription: return description in PhpDoc
+- setDescription: method description in PhpDoc
 
 ### AddTraitToClassRector
 

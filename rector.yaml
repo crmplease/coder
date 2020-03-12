@@ -27,6 +27,7 @@ services:
   Crmplease\Coder\Rector\AddPropertyToClassRector: null
   Crmplease\Coder\Rector\AddParameterToMethodRector: null
   Crmplease\Coder\Rector\AddCodeToMethodRector: null
+  Crmplease\Coder\Rector\AddMethodToClassRector: null
   Crmplease\Coder\Rector\AddTraitToClassRector: null
   Crmplease\Coder\Rector\AddPhpdocMethodToClassRector: null
   Crmplease\Coder\Rector\AddPhpdocParamToMethodRector: null

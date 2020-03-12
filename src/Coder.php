@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crmplease\Coder;
 
 use Crmplease\Coder\Rector\AddCodeToMethodRector;
+use Crmplease\Coder\Rector\AddMethodToClassRector;
 use Crmplease\Coder\Rector\AddParameterToMethodRector;
 use Crmplease\Coder\Rector\AddPhpdocMethodToClassRector;
 use Crmplease\Coder\Rector\AddPhpdocParamToMethodRector;
@@ -36,6 +37,7 @@ class Coder
     private $addPropertyToClassRector;
     private $addParameterToMethodRector;
     private $addCodeToMethodRector;
+    private $addMethodToClassRector;
     private $addTraitToClassRector;
     private $addPhpdocParamToMethodRector;
     private $addPhpdocPropertyToClassRector;
@@ -65,6 +67,7 @@ class Coder
         AddPropertyToClassRector $addPropertyToClassRector,
         AddParameterToMethodRector $addParameterToMethodRector,
         AddCodeToMethodRector $addCodeToMethodRector,
+        AddMethodToClassRector $addMethodToClassRector,
         AddTraitToClassRector $addTraitToClassRector,
         AddPhpdocParamToMethodRector $addPhpdocParamToMethodRector,
         AddPhpdocPropertyToClassRector $addPhpdocPropertyToClassRector,
@@ -82,6 +85,7 @@ class Coder
         $this->addPropertyToClassRector = $addPropertyToClassRector;
         $this->addParameterToMethodRector = $addParameterToMethodRector;
         $this->addCodeToMethodRector = $addCodeToMethodRector;
+        $this->addMethodToClassRector = $addMethodToClassRector;
         $this->addTraitToClassRector = $addTraitToClassRector;
         $this->addPhpdocParamToMethodRector = $addPhpdocParamToMethodRector;
         $this->addPhpdocPropertyToClassRector = $addPhpdocPropertyToClassRector;
@@ -392,6 +396,45 @@ class Coder
             ->setMethod($method)
             ->setCode($code);
         $this->rectorRunner->run($file, $this->addCodeToMethodRector);
+    }
+
+    /**
+     * @param string $file
+     * @param string $method
+     * @param string $visibility AddMethodToClassRector::VISIBILITY_*
+     * @param bool $isStatic
+     * @param bool $isAbstract
+     * @param bool $isFinal
+     * @param string $returnType
+     * @param string $returnDescription
+     * @param string $description
+     *
+     * @throws FileNotFoundException
+     * @throws RectorException
+     * @throws ShouldNotHappenException
+     */
+    public function addMethodToClass(
+        string $file,
+        string $method,
+        string $visibility = AddMethodToClassRector::VISIBILITY_PRIVATE,
+        bool $isStatic = false,
+        bool $isAbstract = false,
+        bool $isFinal = false,
+        string $returnType = '',
+        string $returnDescription = '',
+        string $description = ''
+    ): void
+    {
+        $this->addMethodToClassRector
+            ->setMethod($method)
+            ->setVisibility($visibility)
+            ->setIsStatic($isStatic)
+            ->setIsAbstract($isAbstract)
+            ->setIsFinal($isFinal)
+            ->setReturnType($returnType)
+            ->setReturnDescription($returnDescription)
+            ->setDescription($description);
+        $this->rectorRunner->run($file, $this->addMethodToClassRector);
     }
 
     /**
