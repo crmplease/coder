@@ -401,11 +401,15 @@ $coder->addPropertyToClass(
     // property visibility, can be VISIBILITY_PRIVATE, VISIBILITY_PROTECTED or VISIBILITY_PUBLIC
     AddPropertyToClassRector::VISIBILITY_PRIVATE,
     // default value for property, skip it or pass null if isn't needed
-    'newValue'
+    'newValue',
+    // property type in Phpdoc
+    'string',
+    // property description in Phpdoc
+    'description'
 );
 ```
 
-If property exists, then visibility and static will be checked, if they're different, then [`RectorException`](src/Rector/RectorException.php) will be thrown. If they're equal, then value will changed to `'newValue'`.
+If property exists, then property will be updated.
 
 Example:
 ```php
@@ -421,6 +425,9 @@ Became:
 class ClassName
 {
     protected $existsProperty;
+    /**
+     * @var string description
+     */
     private $newProperty = 'newValue';
 }
 ```
@@ -534,7 +541,7 @@ $coder->addMethodToClass(
 );
 ```
 
-If method exists, then signature and PhpDoc will be updated.
+If method exists, then signature and Phpdoc will be updated.
 
 Example:
 ```php
@@ -577,14 +584,14 @@ class ClassName
 }
 ```
 
-### Add phpdoc param to method
+### Add Phpdoc param to method
 
 ```php
 $coder->addPhpdocParamToMethod(
     '/path/to/ClassName.php',
     // method name
     '__construct',
-    // parameter, for which need to add phpdoc
+    // parameter, for which need to add Phpdoc
     'newParameter',
     // parameter type
     'string|null',
@@ -593,7 +600,7 @@ $coder->addPhpdocParamToMethod(
 );
 ```
 
-If phpdoc for parameter already exists, then it will be removed and added again.
+If Phpdoc for parameter already exists, then it will be removed and added again.
 
 Example:
 ```php
@@ -620,7 +627,7 @@ class ClassName
 }
 ```
 
-### Add phpdoc property to class
+### Add Phpdoc property to class
 
 ```php
 use \Crmplease\Coder\PhpdocProperty;
@@ -637,7 +644,7 @@ $coder->addPhpdocPropertyToClass(
 );
 ```
 
-If phpdoc for property already exists, then it will be updated.
+If Phpdoc for property already exists, then it will be updated.
 
 Example:
 ```php
@@ -671,7 +678,7 @@ $coder->addPhpdocPropertiesToClass(
 );
 ```
 
-### Add phpdoc method to class
+### Add Phpdoc method to class
 
 ```php
 use \Crmplease\Coder\PhpdocMethod;
@@ -704,7 +711,7 @@ $coder->addPhpdocMethodToClass(
 );
 ```
 
-If phpdoc for method already exists, then it will be updated.
+If Phpdoc for method already exists, then it will be updated.
 
 Example:
 ```php
@@ -926,6 +933,8 @@ Config for AddPropertyToClassRector:
 - setVisibility: property visibility 'public', 'protected' or 'private', default is 'private'
 - setIsStatic: is property static or no, true or false, default false
 - setValue: default property value, don't pass it if isn't needed
+- setType: property type in Phpdoc, can be class name started with '\\' or scalar type, can by autodetected by default value
+- setDescription: property description in Phpdoc
 
 ### AddParameterToMethodRector
 
@@ -951,8 +960,8 @@ Config for AddMethodToClassRector:
 - setIsAbstract: is method abstract or no, true or false, default false
 - setIsFinal: is method final or no, true or false, default false
 - setReturnType: method return type, can be class name started with '\\' or scalar type or void
-- setReturnDescription: return description in PhpDoc
-- setDescription: method description in PhpDoc
+- setReturnDescription: return description in Phpdoc
+- setDescription: method description in Phpdoc
 
 ### AddTraitToClassRector
 
@@ -962,26 +971,26 @@ Config for AddTraitToClassRector:
 ### AddPhpdocParamToMethodRector
 
 Config for AddPhpdocParamToMethodRector:
-- setMethod: method name, to which phpdoc need to add parameter
-- setParameter: parameter name which need to add to phpdoc
-- setParameterType: parameter type which need to add to phpdoc, can be class name started with '\\' or scalar type, collections, union type
-- setDescription: description for param in phpdoc
+- setMethod: method name, to which Phpdoc need to add parameter
+- setParameter: parameter name which need to add to Phpdoc
+- setParameterType: parameter type which need to add to Phpdoc, can be class name started with '\\' or scalar type, collections, union type
+- setDescription: description for param in Phpdoc
 
 ### AddPhpdocPropertyToClassRector
 
 Config for AddPhpdocPropertyToClassRector:
-- setProperty: property name which need to add to phpdoc
-- setPropertyType: property type which need to add to phpdoc, can be class name started with '\\' or scalar type, collections, union type
-- setDescription: description for property in phpdoc
+- setProperty: property name which need to add to Phpdoc
+- setPropertyType: property type which need to add to Phpdoc, can be class name started with '\\' or scalar type, collections, union type
+- setDescription: description for property in Phpdoc
 
 ### AddPhpdocMethodToClassRector
 
 Config for AddPhpdocMethodToClassRector:
-- setMethod: method name which need to add to phpdoc
-- setReturnType: method return type which need to add to phpdoc, can be class name started with '\\' or scalar type, collections, union type
+- setMethod: method name which need to add to Phpdoc
+- setReturnType: method return type which need to add to Phpdoc, can be class name started with '\\' or scalar type, collections, union type
 - setIsStatic: is method static or no, true or false, default false
 - setParameters: array of [`PhpdocMethodParameter`](src/PhpdocMethodParameter.php) objects
-- setDescription: description for method in phpdoc
+- setDescription: description for method in Phpdoc
 
 ### ChangeClassParentRector
 

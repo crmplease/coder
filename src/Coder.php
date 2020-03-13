@@ -330,6 +330,8 @@ class Coder
      * @param bool $isStatic
      * @param string $visibility AddPropertyToClassRector::VISIBILITY_*
      * @param string|float|int|array|Constant|Code|null $value default value for property, skip it or pass null if isn't needed
+     * @param string $type
+     * @param string $description
      *
      * @throws FileNotFoundException
      * @throws ShouldNotHappenException
@@ -340,14 +342,18 @@ class Coder
         string $property,
         bool $isStatic,
         string $visibility,
-        $value = null
+        $value = null,
+        string $type = '',
+        string $description = ''
     ): void
     {
         $this->addPropertyToClassRector
             ->setProperty($property)
             ->setIsStatic($isStatic)
             ->setVisibility($visibility)
-            ->setValue($value);
+            ->setValue($value)
+            ->setType($type)
+            ->setDescription($description);
         $this->rectorRunner->run($file, $this->addPropertyToClassRector);
     }
 

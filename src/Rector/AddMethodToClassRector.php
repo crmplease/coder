@@ -45,7 +45,7 @@ class AddMethodToClassRector extends AbstractRector
         self::VISIBILITY_PRIVATE => Class_::MODIFIER_PRIVATE,
     ];
 
-    private $phpDocHelper;
+    private $phpdocHelper;
     private $phpDocInfoFactory;
     private $convertToAstHelper;
     private $method = '';
@@ -58,12 +58,12 @@ class AddMethodToClassRector extends AbstractRector
     private $description = '';
 
     public function __construct(
-        PhpdocHelper $phpDocHelper,
+        PhpdocHelper $phpdocHelper,
         PhpDocInfoFactory $phpDocInfoFactory,
         ConvertToAstHelper $convertToAstHelper
     )
     {
-        $this->phpDocHelper = $phpDocHelper;
+        $this->phpdocHelper = $phpdocHelper;
         $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->convertToAstHelper = $convertToAstHelper;
     }
@@ -247,9 +247,9 @@ PHP
             } else {
                 $returnTypePhpDocString = $this->returnType;
             }
-            $returnTypePhpDoc = $this->phpDocHelper->createTypeTagNodeByString($returnTypePhpDocString);
+            $returnTypePhpDoc = $this->phpdocHelper->createTypeTagNodeByString($returnTypePhpDocString);
         } elseif ($this->method !== '__construct') {
-            $returnTypePhpDoc = $this->phpDocHelper->createTypeTagNodeByString('void');
+            $returnTypePhpDoc = $this->phpdocHelper->createTypeTagNodeByString('void');
         }
 
         foreach ($node->getMethods() as $method) {

@@ -44,14 +44,14 @@ class AddPhpdocMethodToClassRector extends AbstractRector
     private $description = '';
 
     public function __construct(
-        PhpdocHelper $phpDocHelper,
+        PhpdocHelper $phpdocHelper,
         SymfonyStyle $symfonyStyle,
         ParameterProvider $parameterProvider,
         PhpDocParser $phpDocParser,
         Lexer $lexer
     )
     {
-        $this->phpdocHelper = $phpDocHelper;
+        $this->phpdocHelper = $phpdocHelper;
         $this->symfonyStyle = $symfonyStyle;
         $this->parameterProvider = $parameterProvider;
         $this->phpDocParser = $phpDocParser;

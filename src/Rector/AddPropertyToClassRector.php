@@ -7,17 +7,24 @@ use Crmplease\Coder\Code;
 use Crmplease\Coder\Constant;
 use Crmplease\Coder\Helper\ConvertToAstHelper;
 use Crmplease\Coder\Helper\GetPropertyPropertyHelper;
+use Crmplease\Coder\Helper\PhpdocHelper;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
+use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareVarTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\Exception\NotImplementedException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\RectorDefinition\CodeSample;
 use Rector\Core\RectorDefinition\RectorDefinition;
 use function array_merge;
 use function array_slice;
+use function count;
 use function get_class;
+use function gettype;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
@@ -34,15 +41,26 @@ class AddPropertyToClassRector extends AbstractRector
         self::VISIBILITY_PRIVATE => Class_::MODIFIER_PRIVATE,
     ];
 
+    private $phpdocHelper;
+    private $phpDocInfoFactory;
     private $getPropertyPropertyHelper;
     private $convertToAstHelper;
     private $property = '';
     private $visibility = self::VISIBILITY_PRIVATE;
     private $isStatic = false;
     private $value;
+    private $type = '';
+    private $description = '';
 
-    public function __construct(GetPropertyPropertyHelper $getPropertyPropertyHelper, ConvertToAstHelper $convertToAstHelper)
+    public function __construct(
+        PhpdocHelper $phpdocHelper,
+        PhpDocInfoFactory $phpDocInfoFactory,
+        GetPropertyPropertyHelper $getPropertyPropertyHelper,
+        ConvertToAstHelper $convertToAstHelper
+    )
     {
+        $this->phpdocHelper = $phpdocHelper;
+        $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->getPropertyPropertyHelper = $getPropertyPropertyHelper;
         $this->convertToAstHelper = $convertToAstHelper;
     }
@@ -97,6 +115,30 @@ class AddPropertyToClassRector extends AbstractRector
         return $this;
     }
 
+    /**
+     * @param string $type
+     *
+     * @return $this
+     */
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     public function getDefinition(): RectorDefinition
     {
         return new RectorDefinition('Add protected property "property" with value "defaultValue" with check duplicates', [
@@ -127,11 +169,45 @@ PHP
      *
      * @return Node|null
      * @throws RectorException
+     * @throws NotImplementedException
      */
     public function refactor(Node $node): ?Node
     {
         if (!$node instanceof Class_) {
             return null;
+        }
+
+        $flags = static::VISIBILITIES_TO_AST_FLAGS[$this->visibility];
+        if ($this->isStatic) {
+            $flags |= Class_::MODIFIER_STATIC;
+        }
+
+        if (!$this->type && $this->value !== null) {
+            $value = $this->value;
+            if ($value instanceof Constant) {
+                $value = $value->getValue();
+            }
+            switch (gettype($value)) {
+                case 'boolean':
+                    $this->type = 'bool';
+                    break;
+                case 'integer':
+                    $this->type = 'int';
+                    break;
+                case 'double':
+                    $this->type = 'float';
+                    break;
+                case 'string':
+                    $this->type = 'string';
+                    break;
+                case 'array':
+                    $this->type = 'array';
+                    break;
+            }
+        }
+        $typePhpDoc = null;
+        if ($this->type || $this->description) {
+            $typePhpDoc = $this->phpdocHelper->createTypeTagNodeByString($this->type);
         }
 
         $propertyPropertyNode = $this->getPropertyPropertyHelper->getPropertyProperty($node, $this->property);
@@ -143,34 +219,33 @@ PHP
             if (!$propertyNode instanceof Property) {
                 throw new RectorException("Can't get property node from property property node, got class: " . get_class($propertyNode));
             }
-            switch ($this->visibility) {
-                case static::VISIBILITY_PRIVATE:
-                    if (!$propertyNode->isPrivate()) {
-                        throw new RectorException("Property {$this->property} already exists, but isn't private");
-                    }
-                    break;
-                case static::VISIBILITY_PROTECTED:
-                    if (!$propertyNode->isProtected()) {
-                        throw new RectorException("Property {$this->property} already exists, but isn't protected");
-                    }
-                    break;
-                case static::VISIBILITY_PUBLIC:
-                    if (!$propertyNode->isPublic()) {
-                        throw new RectorException("Property {$this->property} already exists, but isn't public");
-                    }
-                    break;
+            if (count($propertyNode->props) > 1) {
+                throw new RectorException("Multiple properties aren't supported");
             }
-            if ($propertyNode->isStatic() !== $this->isStatic) {
-                if ($propertyNode->isStatic()) {
-                    throw new RectorException("Property {$this->property} already exists, but is static");
-                }
-                throw new RectorException("Property {$this->property} already exists, but isn't static");
-            }
+            // clear visibility bits
+            $propertyNode->flags &= ~Class_::VISIBILITY_MODIFIER_MASK;
+            $propertyNode->flags |= $flags;
             if ($this->value === null) {
                 $propertyPropertyNode->default = null;
             } else {
                 $propertyPropertyNode->default = $this->convertToAstHelper->simpleValueOrArrayToAst($this->value);
             }
+
+            /** @var PhpDocInfo $phpDocInfo */
+            $phpDocInfo = $propertyNode->getAttribute(AttributeKey::PHP_DOC_INFO);
+            $varTagValueNode = $phpDocInfo->getVarTagValue();
+            if ($typePhpDoc) {
+                if ($varTagValueNode) {
+                    $varTagValueNode->type = $typePhpDoc;
+                    $varTagValueNode->description = $this->description;
+                } else {
+                    $varTagValueNode = new AttributeAwareVarTagValueNode($typePhpDoc, '', $this->description);
+                    $phpDocInfo->addTagValueNode($varTagValueNode);
+                }
+            } elseif ($varTagValueNode !== null) {
+                $phpDocInfo->removeTagValueNodeFromNode($varTagValueNode);
+            }
+
             return $node;
         }
         $valueNode = null;
@@ -178,16 +253,19 @@ PHP
             $valueNode = $this->convertToAstHelper->simpleValueOrArrayToAst($this->value);
         }
 
-        $flags = static::VISIBILITIES_TO_AST_FLAGS[$this->visibility];
-        if ($this->isStatic) {
-            $flags |= Class_::MODIFIER_STATIC;
-        }
         $propertyNode = new Property(
             $flags,
             [
                 new PropertyProperty(new Node\VarLikeIdentifier($this->property), $valueNode),
             ]
         );
+
+        if ($typePhpDoc) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($propertyNode);
+            $varTagValueNode = new AttributeAwareVarTagValueNode($typePhpDoc, '', $this->description);
+            $phpDocInfo->addTagValueNode($varTagValueNode);
+        }
+
         $constructorMethodNode = $node->getMethod('__construct');
         $constructorMethodStatementNumber = null;
         $lastPropertyStatementNumber = null;
