@@ -7,8 +7,7 @@ Coder is library for code-generation, e.g. add property to class, parameter to m
 This library should be installed as a dependency using [Composer](https://getcomposer.org/):
 
 ```bash
-composer.phar config repositories.crmplease/coder git git@gitlab.crmplease.me:mougrim/coder.git
-composer.phar require crmplease/coder:dev-master --dev
+composer.phar require crmplease/coder --dev
 ```
 
 ## Get started

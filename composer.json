@@ -1,6 +1,6 @@
 {
     "name": "crmplease/coder",
-    "license": "proprietary",
+    "license": "MIT",
     "type": "library",
     "description": "Coder is library for code-generation, e.g. add property to class, parameter to method, value to array and etc.",
     "require": {
