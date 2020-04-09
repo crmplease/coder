@@ -855,6 +855,51 @@ return [
 ];
 ```
 
+## Config
+
+You can provide config object when create coder:
+```php
+use Crmplease\Coder\Coder;
+use Crmplease\Coder\Config;
+
+$config = new Config();
+$coder = Coder::create($config);
+```
+
+### Auto import classes
+
+By default auto import classes is disabled by [rector.yaml](rector.yaml). You can change default value or use mapping/callback for enable/disable auto import classes:
+
+```php
+use Crmplease\Coder\Config;
+
+$config = (new Config())
+    // use default value
+    ->setAutoImport(null)
+    // always auto import
+    ->setAutoImport(true)
+    // newer auto import
+    ->setAutoImport(false)
+    ->setAutoImport(
+        [
+            // auto import this file
+            '/path/to/file/with/enabled/auto/import/classes.php' => true,
+            // doesn't auto import this file
+            '/path/to/file/with/disabled/auto/import/classes.php' => false,
+            // use default value
+            '/path/to/file/with/defaul/auto/import/classes.php' => null,
+        ]
+    )
+    ->setAutoImport(
+        static function (string $file): ?bool {
+            // some logic
+            // if null is returned, then default value will be used
+            return $result;
+        }
+    )
+    ->setAutoImport([SomeClass::class, 'method']);
+```
+
 ## Internals
 
 If you want to auto import classes, then change `parameters.auto_import_names` to `true` in [rector.yaml](rector.yaml).

@@ -45,13 +45,21 @@ class Coder
     private $changeClassParentRector;
 
     /**
+     * @param Config|null $config
+     *
      * @return static
      * @throws FileNotFoundException
      */
-    public static function create(): self
+    public static function create(?Config $config = null): self
     {
+        if (!$config) {
+            $config = new Config();
+        } else {
+            $config = clone $config;
+        }
         $containerConfigurator = new RectorContainerConfigurator();
         $container = $containerConfigurator->configureContainer();
+        $container->set(Config::class, $config);
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $container->get(__CLASS__);
     }

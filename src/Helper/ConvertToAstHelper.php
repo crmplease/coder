@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
@@ -115,9 +116,9 @@ class ConvertToAstHelper
     {
         if (strpos($constant, '::') !== false) {
             [$className, $constant] = explode('::', $constant);
-            return new ClassConstFetch($this->nameNodeHelper->createNodeName($className), new Identifier($constant));
+            return new ClassConstFetch(new FullyQualified(ltrim($className, '\\')), new Identifier($constant));
         }
 
-        return new ConstFetch($this->nameNodeHelper->createNodeName($constant));
+        return new ConstFetch(new Name($constant));
     }
 }

@@ -22,12 +22,6 @@ class NameNodeHelper
         return $node->toString();
     }
 
-    public function createNodeName(string $name): Name
-    {
-        $parts = explode('\\', $name);
-        return new Name($parts);
-    }
-
     /**
      * @param Identifier|Name|NullableType|UnionType $node
      *
