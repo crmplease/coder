@@ -5,6 +5,8 @@ services:
   Crmplease\Coder\Coder:
     public: true
   Crmplease\Coder\RectorRunner: null
+  Crmplease\Coder\Config:
+    public: true
 
   # rector helpers
   Crmplease\Coder\Helper\AddToArrayByKeyHelper: null

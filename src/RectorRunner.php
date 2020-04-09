@@ -11,6 +11,7 @@ use Rector\Core\Application\ErrorAndDiffCollector;
 use Rector\Core\Application\FileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
+use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Output\ConsoleOutputFormatter;
 use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -19,6 +20,7 @@ use Rector\FileSystemRector\FileSystemFileProcessor;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Testing\Application\EnabledRectorsProvider;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\Exception\FileNotFoundException;
 use Symplify\SmartFileSystem\SmartFileInfo;
@@ -35,6 +37,8 @@ use const PHP_EOL;
  */
 class RectorRunner
 {
+    private $config;
+    private $parameterProvider;
     private $symfonyStyle;
     private $fileSystemFileProcessor;
     private $errorAndDiffCollector;
@@ -50,6 +54,8 @@ class RectorRunner
     private $showProgressBar = true;
 
     public function __construct(
+        Config $config,
+        ParameterProvider $parameterProvider,
         SymfonyStyle $symfonyStyle,
         FileSystemFileProcessor $fileSystemFileProcessor,
         ErrorAndDiffCollector $errorAndDiffCollector,
@@ -63,6 +69,8 @@ class RectorRunner
         AppliedRectorCollector $appliedRectorCollector
     )
     {
+        $this->config = $config;
+        $this->parameterProvider = $parameterProvider;
         $this->symfonyStyle = $symfonyStyle;
         $this->fileSystemFileProcessor = $fileSystemFileProcessor;
         $this->errorAndDiffCollector = $errorAndDiffCollector;
@@ -119,9 +127,20 @@ class RectorRunner
         $this->enabledRectorsProvider->addEnabledRector(get_class($rector));
 
         // 2. change nodes with Rectors
-        $this->tryCatchWrapper($smartFileInfo, function (SmartFileInfo $smartFileInfo): void {
-            $this->fileProcessor->refactor($smartFileInfo);
-        });
+        $previousAutoImport = $this->parameterProvider->provideParameter(Option::AUTO_IMPORT_NAMES);
+        $shouldAutoImport = $this->shouldAutoImport($smartFileInfo);
+        if ($shouldAutoImport !== null) {
+            $this->parameterProvider->changeParameter(Option::AUTO_IMPORT_NAMES, $shouldAutoImport);
+        }
+        try {
+            $this->tryCatchWrapper($smartFileInfo, function (SmartFileInfo $smartFileInfo): void {
+                $this->fileProcessor->refactor($smartFileInfo);
+            });
+        } finally {
+            if ($shouldAutoImport !== null) {
+                $this->parameterProvider->changeParameter(Option::AUTO_IMPORT_NAMES, $previousAutoImport);
+            }
+        }
 
         // 3. print to file or string
         $this->tryCatchWrapper($smartFileInfo, function (SmartFileInfo $smartFileInfo): void {
@@ -169,6 +188,19 @@ class RectorRunner
             }
             throw new RectorException("There are errors on run rector:\n" . implode("\n", $messages));
         }
+    }
+
+    protected function shouldAutoImport(SmartFileInfo $smartFileInfo): ?bool
+    {
+        $autoImport = $this->config->getAutoImport();
+        if (!$autoImport) {
+            return null;
+        }
+        $realFilePath = $smartFileInfo->getRealPath();
+        if (!$realFilePath) {
+            return null;
+        }
+        return $autoImport($realFilePath);
     }
 
     protected function processFileInfo(SmartFileInfo $fileInfo): void

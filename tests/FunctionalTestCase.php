@@ -43,6 +43,11 @@ abstract class FunctionalTestCase extends TestCase
         ];
     }
 
+    protected function getResultFixturePath(string $name): string
+    {
+        return $this->getFixturePaths($name)['result'];
+    }
+
     protected function createFixtureFile(string $name): string
     {
         $paths = $this->getFixturePaths($name);
