@@ -102,20 +102,6 @@ class Coder
     }
 
     /**
-     * @param bool $showProgressBar
-     *
-     * @return $this
-     */
-    public function setShowProgressBar(bool $showProgressBar): self
-    {
-        $this->rectorRunner->setShowProgressBar($showProgressBar);
-        $this->addPhpdocPropertyToClassRector->setShowProgressBar($showProgressBar);
-        $this->addPhpdocMethodToClassRector->setShowProgressBar($showProgressBar);
-
-        return $this;
-    }
-
-    /**
      * @param string $file
      * @param string[]|int[]|Constant[] $path
      * @param string|float|int|array|Constant|Code $value

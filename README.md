@@ -866,6 +866,16 @@ $config = new Config();
 $coder = Coder::create($config);
 ```
 
+### Disable progress bar
+
+By default rector shows progress bar when change files. You can disable it:
+```php
+use Crmplease\Coder\Config;
+
+$config = (new Config())
+    ->setShowProgressBar(false);
+```
+
 ### Auto import classes
 
 By default auto import classes is disabled by [rector.yaml](rector.yaml). You can change default value or use mapping/callback for enable/disable auto import classes:

@@ -51,7 +51,6 @@ class RectorRunner
     private $outputFormatterCollector;
     private $appliedRectorCollector;
     private $privatesAccessor;
-    private $showProgressBar = true;
 
     public function __construct(
         Config $config,
@@ -86,18 +85,6 @@ class RectorRunner
     }
 
     /**
-     * @param bool $showProgressBar
-     *
-     * @return $this
-     */
-    public function setShowProgressBar(bool $showProgressBar): self
-    {
-        $this->showProgressBar = $showProgressBar;
-
-        return $this;
-    }
-
-    /**
      * @param string $file
      * @param AbstractRector $rector
      *
@@ -107,16 +94,15 @@ class RectorRunner
      */
     public function run(string $file, AbstractRector $rector): void
     {
-        if ($this->showProgressBar) {
+        if ($this->config->doShowProgressBar()) {
             $this->symfonyStyle->text('Run rector '.get_class($rector)." on file {$file}");
         }
         $smartFileInfo = new SmartFileInfo($file);
-        if ($this->showProgressBar) {
+        if ($this->config->doShowProgressBar()) {
             // why 3? one for each cycle, so user sees some activity all the time
             $this->symfonyStyle->progressStart(3);
         }
         // PHPStan has to know about all files!
-        /** @noinspection PhpUndefinedMethodInspection */
         $this->nodeScopeResolver->setAnalysedFiles([$smartFileInfo->getRealPath()]);
         // 1. parse files to nodes
         $this->tryCatchWrapper($smartFileInfo, function (SmartFileInfo $smartFileInfo): void {
@@ -147,7 +133,7 @@ class RectorRunner
             $this->processFileInfo($smartFileInfo);
         });
 
-        if ($this->showProgressBar) {
+        if ($this->config->doShowProgressBar()) {
             $this->symfonyStyle->newLine(2);
         }
 
@@ -157,7 +143,7 @@ class RectorRunner
         // 5. extensions on finish
         $this->finishingExtensionRunner->run();
 
-        if ($this->showProgressBar) {
+        if ($this->config->doShowProgressBar()) {
             $outputFormatter = $this->outputFormatterCollector->getByName(ConsoleOutputFormatter::NAME);
             $outputFormatter->report($this->errorAndDiffCollector);
         }
@@ -221,7 +207,7 @@ class RectorRunner
 
     private function tryCatchWrapper(SmartFileInfo $smartFileInfo, callable $callback): void
     {
-        if ($this->showProgressBar) {
+        if ($this->config->doShowProgressBar()) {
             $this->symfonyStyle->progressAdvance();
         }
 
