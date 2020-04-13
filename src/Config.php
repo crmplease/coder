@@ -16,7 +16,7 @@ class Config
 
     public function getAutoImport(): ?callable
     {
-        if (!$this->autoImport) {
+        if ($this->autoImport === null) {
             return null;
         }
         if (is_bool($this->autoImport)) {
