@@ -921,7 +921,7 @@ $config = (new Config())
     ->setRectorConfigPath('/path/to/rector.yaml');
 ```
 
-For more information see rector [documentation](https://github.com/rectorphp/rector).
+For more information about rector configuration see rector [documentation](https://github.com/rectorphp/rector).
 
 ## Internals
 
