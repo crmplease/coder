@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\Crmplease\Coder;
 
 use Crmplease\Coder\Coder;
+use Crmplease\Coder\Config;
 use PHPUnit\Framework\Constraint\IsIdentical;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
@@ -25,8 +26,9 @@ abstract class FunctionalTestCase extends TestCase
     protected function getCoder(): Coder
     {
         if (self::$coder === null) {
-            self::$coder = Coder::create()
+            $config = (new Config())
                 ->setShowProgressBar(false);
+            self::$coder = Coder::create($config);
         }
         return self::$coder;
     }

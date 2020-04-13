@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crmplease\Coder\Rector;
 
+use Crmplease\Coder\Config;
 use Crmplease\Coder\Helper\PhpdocHelper;
 use Crmplease\Coder\PhpdocMethodParameter;
 use PhpParser\Node;
@@ -28,12 +29,9 @@ use function get_class;
  */
 class AddPhpdocMethodToClassRector extends AbstractRector
 {
+    private $config;
     private $phpdocHelper;
     private $symfonyStyle;
-    private $parameterProvider;
-    private $phpDocParser;
-    private $lexer;
-    private $showProgressBar = true;
     private $method = '';
     private $returnType = '';
     private $isStatic = false;
@@ -44,30 +42,14 @@ class AddPhpdocMethodToClassRector extends AbstractRector
     private $description = '';
 
     public function __construct(
+        Config $config,
         PhpdocHelper $phpdocHelper,
-        SymfonyStyle $symfonyStyle,
-        ParameterProvider $parameterProvider,
-        PhpDocParser $phpDocParser,
-        Lexer $lexer
+        SymfonyStyle $symfonyStyle
     )
     {
+        $this->config = $config;
         $this->phpdocHelper = $phpdocHelper;
         $this->symfonyStyle = $symfonyStyle;
-        $this->parameterProvider = $parameterProvider;
-        $this->phpDocParser = $phpDocParser;
-        $this->lexer = $lexer;
-    }
-
-    /**
-     * @param bool $showProgressBar
-     *
-     * @return $this
-     */
-    public function setShowProgressBar(bool $showProgressBar): self
-    {
-        $this->showProgressBar = $showProgressBar;
-
-        return $this;
     }
 
     /**
@@ -195,13 +177,13 @@ PHP
         foreach ($methodTagNodes as $methodTagNode) {
             $value = $methodTagNode->value;
             if ($value instanceof AttributeAwareInvalidTagValueNode) {
-                if ($this->showProgressBar) {
+                if ($this->config->doShowProgressBar()) {
                     $this->symfonyStyle->warning("Invalid method {$value->value} Phpdoc: {$value->exception->getMessage()}");
                 }
                 continue;
             }
             if (!$value instanceof AttributeAwareMethodTagValueNode) {
-                if ($this->showProgressBar) {
+                if ($this->config->doShowProgressBar()) {
                     $this->symfonyStyle->warning('Unknown method Phpdoc class: '. get_class($value));
                 }
                 continue;

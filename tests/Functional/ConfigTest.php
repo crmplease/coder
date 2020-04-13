@@ -18,9 +18,9 @@ class ConfigTest extends FunctionalTestCase
     {
         $fixture = 'autoImportDisabled';
         $config = (new Config())
+            ->setShowProgressBar(false)
             ->setAutoImport(false);
-        $coder = Coder::create($config)
-            ->setShowProgressBar(false);
+        $coder = Coder::create($config);
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
@@ -33,9 +33,9 @@ class ConfigTest extends FunctionalTestCase
     {
         $fixture = 'autoImportEnabled';
         $config = (new Config())
-            ->setAutoImport(true);
-        $coder = Coder::create($config)
+            ->setAutoImport(true)
             ->setShowProgressBar(false);
+        $coder = Coder::create($config);
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
@@ -52,9 +52,9 @@ class ConfigTest extends FunctionalTestCase
                 [
                     $this->getResultFixturePath($fixture) => false,
                 ]
-            );
-        $coder = Coder::create($config)
+            )
             ->setShowProgressBar(false);
+        $coder = Coder::create($config);
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
@@ -71,9 +71,9 @@ class ConfigTest extends FunctionalTestCase
                 [
                     $this->getResultFixturePath($fixture) => true,
                 ]
-            );
-        $coder = Coder::create($config)
+            )
             ->setShowProgressBar(false);
+        $coder = Coder::create($config);
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
@@ -90,9 +90,9 @@ class ConfigTest extends FunctionalTestCase
                 function (string $file) use ($fixture): bool {
                     return $file !== $this->getResultFixturePath($fixture);
                 }
-            );
-        $coder = Coder::create($config)
+            )
             ->setShowProgressBar(false);
+        $coder = Coder::create($config);
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
@@ -109,9 +109,9 @@ class ConfigTest extends FunctionalTestCase
                 function (string $file) use ($fixture): bool {
                     return $file === $this->getResultFixturePath($fixture);
                 }
-            );
-        $coder = Coder::create($config)
+            )
             ->setShowProgressBar(false);
+        $coder = Coder::create($config);
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
@@ -124,9 +124,9 @@ class ConfigTest extends FunctionalTestCase
     {
         $fixture = 'autoImportDisabled';
         $config = (new Config())
-            ->setAutoImport([$this, 'autoImportDisabled']);
-        $coder = Coder::create($config)
+            ->setAutoImport([$this, 'autoImportDisabled'])
             ->setShowProgressBar(false);
+        $coder = Coder::create($config);
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],
@@ -144,9 +144,9 @@ class ConfigTest extends FunctionalTestCase
     {
         $fixture = 'autoImportEnabled';
         $config = (new Config())
-            ->setAutoImport([$this, 'autoImportEnabled']);
-        $coder = Coder::create($config)
+            ->setAutoImport([$this, 'autoImportEnabled'])
             ->setShowProgressBar(false);
+        $coder = Coder::create($config);
         $coder->addToFileReturnArrayByOrder(
             $this->createFixtureFile($fixture),
             [],

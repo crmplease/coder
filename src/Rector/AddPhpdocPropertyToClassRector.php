@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace Crmplease\Coder\Rector;
 
+use Crmplease\Coder\Config;
 use Crmplease\Coder\Helper\PhpdocHelper;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareInvalidTagValueNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePropertyTagValueNode;
@@ -18,7 +17,6 @@ use Rector\Core\RectorDefinition\CodeSample;
 use Rector\Core\RectorDefinition\RectorDefinition;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use function get_class;
 
 /**
@@ -26,41 +24,22 @@ use function get_class;
  */
 class AddPhpdocPropertyToClassRector extends AbstractRector
 {
+    private $config;
     private $phpdocHelper;
     private $symfonyStyle;
-    private $parameterProvider;
-    private $phpDocParser;
-    private $lexer;
-    private $showProgressBar = true;
     private $property = '';
     private $propertyType = '';
     private $description = '';
 
     public function __construct(
+        Config $config,
         PhpdocHelper $phpDocHelper,
-        SymfonyStyle $symfonyStyle,
-        ParameterProvider $parameterProvider,
-        PhpDocParser $phpDocParser,
-        Lexer $lexer
+        SymfonyStyle $symfonyStyle
     )
     {
+        $this->config = $config;
         $this->phpdocHelper = $phpDocHelper;
         $this->symfonyStyle = $symfonyStyle;
-        $this->parameterProvider = $parameterProvider;
-        $this->phpDocParser = $phpDocParser;
-        $this->lexer = $lexer;
-    }
-
-    /**
-     * @param bool $showProgressBar
-     *
-     * @return $this
-     */
-    public function setShowProgressBar(bool $showProgressBar): self
-    {
-        $this->showProgressBar = $showProgressBar;
-
-        return $this;
     }
 
     /**
@@ -150,13 +129,13 @@ PHP
         foreach ($propertyTagNodes as $propertyTagNode) {
             $value = $propertyTagNode->value;
             if ($value instanceof AttributeAwareInvalidTagValueNode) {
-                if ($this->showProgressBar) {
+                if ($this->config->doShowProgressBar()) {
                     $this->symfonyStyle->warning("Invalid property {$value->value} Phpdoc: {$value->exception->getMessage()}");
                 }
                 continue;
             }
             if (!$value instanceof AttributeAwarePropertyTagValueNode) {
-                if ($this->showProgressBar) {
+                if ($this->config->doShowProgressBar()) {
                     $this->symfonyStyle->warning('Unknown property Phpdoc class: '. get_class($value));
                 }
                 continue;

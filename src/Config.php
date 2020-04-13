@@ -47,4 +47,18 @@ class Config
         $this->autoImport = $autoImport;
         return $this;
     }
+
+    protected $showProgressBar = true;
+
+    public function doShowProgressBar(): bool
+    {
+        return $this->showProgressBar;
+    }
+
+    public function setShowProgressBar(bool $showProgressBar): self
+    {
+        $this->showProgressBar = $showProgressBar;
+
+        return $this;
+    }
 }
