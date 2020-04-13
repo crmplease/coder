@@ -61,4 +61,18 @@ class Config
 
         return $this;
     }
+
+    protected $rectorConfigPath = '';
+
+    public function getRectorConfigPath(): string
+    {
+        return $this->rectorConfigPath;
+    }
+
+    public function setRectorConfigPath(string $rectorConfigPath): self
+    {
+        $this->rectorConfigPath = $rectorConfigPath;
+
+        return $this;
+    }
 }

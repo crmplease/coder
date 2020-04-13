@@ -20,13 +20,12 @@ use function array_merge;
  */
 class RectorContainerConfigurator
 {
-    /**
-     * @var ConfigResolver
-     */
+    private $config;
     private $configResolver;
 
-    public function __construct()
+    public function __construct(Config $config)
     {
+        $this->config = $config;
         $this->configResolver = new ConfigResolver();
     }
 
@@ -83,6 +82,9 @@ class RectorContainerConfigurator
     {
         $configs = $this->provide();
         $configs[] = __DIR__ . '/../rector.yaml';
+        if ($this->config->getRectorConfigPath()) {
+            $configs[] = $this->config->getRectorConfigPath();
+        }
 
         // Build DI container
         $rectorContainerFactory = new RectorContainerFactory();

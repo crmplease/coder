@@ -57,7 +57,7 @@ class Coder
         } else {
             $config = clone $config;
         }
-        $containerConfigurator = new RectorContainerConfigurator();
+        $containerConfigurator = new RectorContainerConfigurator($config);
         $container = $containerConfigurator->configureContainer();
         $container->set(Config::class, $config);
         /** @noinspection PhpIncompatibleReturnTypeInspection */

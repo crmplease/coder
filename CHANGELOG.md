@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Class [`Config`](src/Config.php) with possibility to configure auto import classes and show progress bar.
+- Class [`Config`](src/Config.php) with possibility to configure auto import classes, show progress bar and path to rector config.
 
 ### Removed
 - Remove method [`Helper\NameNodeHelper::createNodeName()`](src/Helper/NameNodeHelper.php) because it did same as [`\PhpParser\Node\Name::prepareName()`](https://github.com/nikic/PHP-Parser/blob/v4.3.0/lib/PhpParser/Node/Name.php#L218).

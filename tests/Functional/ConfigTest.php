@@ -159,4 +159,19 @@ class ConfigTest extends FunctionalTestCase
     {
         return true;
     }
+
+    public function testRectorConfigPath(): void
+    {
+        $fixture = 'autoImportEnabled';
+        $config = (new Config())
+            ->setRectorConfigPath(__DIR__ . '/../fixtures/Config/autoImportEnabled.yaml')
+            ->setShowProgressBar(false);
+        $coder = Coder::create($config);
+        $coder->addToFileReturnArrayByOrder(
+            $this->createFixtureFile($fixture),
+            [],
+            new Constant('\\' . BazClass::class . '::class'),
+        );
+        $this->assertFixture($fixture);
+    }
 }

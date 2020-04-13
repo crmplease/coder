@@ -910,6 +910,19 @@ $config = (new Config())
     ->setAutoImport([SomeClass::class, 'method']);
 ```
 
+### Path to rector config path
+
+Rector config file for coder is [`rector.yaml`](rector.yaml). You can provide path to your own config file with redeclare values from [`rector.yaml`](rector.yaml) or add new one:
+
+```php
+use Crmplease\Coder\Config;
+
+$config = (new Config())
+    ->setRectorConfigPath('/path/to/rector.yaml');
+```
+
+For more information see rector [documentation](https://github.com/rectorphp/rector).
+
 ## Internals
 
 If you want to auto import classes, then change `parameters.auto_import_names` to `true` in [rector.yaml](rector.yaml).
