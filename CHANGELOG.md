@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Class [`Config`](src/Config.php) with possibility to configure auto import classes, show progress bar and path to rector config.
+- Add support to remove trait from class `Coder::removeTraitFromClass()`.
 
 ### Removed
 - Remove method [`Helper\NameNodeHelper::createNodeName()`](src/Helper/NameNodeHelper.php) because it did same as [`\PhpParser\Node\Name::prepareName()`](https://github.com/nikic/PHP-Parser/blob/v4.3.0/lib/PhpParser/Node/Name.php#L218).

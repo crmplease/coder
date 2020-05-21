@@ -19,6 +19,7 @@ use Crmplease\Coder\Rector\AddToReturnArrayByOrderRector;
 use Crmplease\Coder\Rector\AddTraitToClassRector;
 use Crmplease\Coder\Rector\ChangeClassParentRector;
 use Crmplease\Coder\Rector\RectorException;
+use Crmplease\Coder\Rector\RemoveTraitFromClassRector;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Symplify\SmartFileSystem\Exception\FileNotFoundException;
 
@@ -39,6 +40,7 @@ class Coder
     private $addCodeToMethodRector;
     private $addMethodToClassRector;
     private $addTraitToClassRector;
+    private $removeTraitFromClassRector;
     private $addPhpdocParamToMethodRector;
     private $addPhpdocPropertyToClassRector;
     private $addPhpdocMethodToClassRector;
@@ -77,6 +79,7 @@ class Coder
         AddCodeToMethodRector $addCodeToMethodRector,
         AddMethodToClassRector $addMethodToClassRector,
         AddTraitToClassRector $addTraitToClassRector,
+        RemoveTraitFromClassRector $removeTraitFromClassRector,
         AddPhpdocParamToMethodRector $addPhpdocParamToMethodRector,
         AddPhpdocPropertyToClassRector $addPhpdocPropertyToClassRector,
         AddPhpdocMethodToClassRector $addPhpdocMethodToClassRector,
@@ -95,6 +98,7 @@ class Coder
         $this->addCodeToMethodRector = $addCodeToMethodRector;
         $this->addMethodToClassRector = $addMethodToClassRector;
         $this->addTraitToClassRector = $addTraitToClassRector;
+        $this->removeTraitFromClassRector = $removeTraitFromClassRector;
         $this->addPhpdocParamToMethodRector = $addPhpdocParamToMethodRector;
         $this->addPhpdocPropertyToClassRector = $addPhpdocPropertyToClassRector;
         $this->addPhpdocMethodToClassRector = $addPhpdocMethodToClassRector;
@@ -450,6 +454,21 @@ class Coder
         $this->addTraitToClassRector
             ->setTrait($trait);
         $this->rectorRunner->run($file, $this->addTraitToClassRector);
+    }
+
+    /**
+     * @param string $file
+     * @param string $trait
+     *
+     * @throws FileNotFoundException
+     * @throws ShouldNotHappenException
+     * @throws RectorException
+     */
+    public function removeTraitFromClass(string $file, string $trait): void
+    {
+        $this->removeTraitFromClassRector
+            ->setTrait($trait);
+        $this->rectorRunner->run($file, $this->removeTraitFromClassRector);
     }
 
     /**

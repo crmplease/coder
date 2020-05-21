@@ -34,7 +34,7 @@ class AddTraitToClassRector extends AbstractRector
 
     public function getDefinition(): RectorDefinition
     {
-        return new RectorDefinition('Add trait "\Some\MyTrait" class with check duplicates', [
+        return new RectorDefinition('Add trait "\Some\MyTrait" to class with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass
