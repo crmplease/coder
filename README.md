@@ -774,6 +774,34 @@ class ClassName
 }
 ```
 
+### Remove trait from class
+
+```php
+$coder->removeTraitFromClass(
+    '/path/to/ClassName.php',
+    \Some\ExistsTraitName::class
+);
+```
+
+If trait isn't used, then nothing will be changed.
+
+Example:
+```php
+// file /path/to/ClassName.php
+class ClassName
+{
+    use \Some\ExistsTraitName;
+}
+```
+
+Became:
+```php
+// file /path/to/ClassName.php
+class ClassName
+{
+}
+```
+
 ### Change class parent
 
 ```php
@@ -1034,6 +1062,11 @@ Config for AddMethodToClassRector:
 
 Config for AddTraitToClassRector:
 - setTrait: trait name, to which need to add to class
+
+### RemoveTraitFromClassRector
+
+Config for RemoveTraitFromClassRector:
+- setTrait: trait name, to which need to remove from class
 
 ### AddPhpdocParamToMethodRector
 

@@ -35,6 +35,7 @@ services:
   Crmplease\Coder\Rector\AddPhpdocParamToMethodRector: null
   Crmplease\Coder\Rector\AddPhpdocPropertyToClassRector: null
   Crmplease\Coder\Rector\ChangeClassParentRector: null
+  Crmplease\Coder\Rector\RemoveTraitFromClassRector: null
 
 parameters:
   auto_import_names: false
