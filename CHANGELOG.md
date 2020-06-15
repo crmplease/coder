@@ -17,3 +17,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix convert constant to ast when auto import classes is enabled.
+- Remove using global argv in [`RectorContainerConfigurator`](src/RectorContainerConfigurator.php).
