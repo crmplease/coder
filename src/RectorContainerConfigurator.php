@@ -38,7 +38,7 @@ class RectorContainerConfigurator
         $configs = [];
 
         // Detect configuration from --set
-        $input = new ArgvInput();
+        $input = new ArgvInput([]);
 
         $setConfig = $this->configResolver->resolveSetFromInputAndDirectory($input, Set::SET_DIRECTORY);
         if ($setConfig !== null) {
