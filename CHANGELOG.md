@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2020-11-06
+
+### Added
+- Add closures support in next methods ([#36](https://github.com/crmplease/coder/pull/36)):
+  - addToFileReturnArray
+  - addToFileReturnArrayByKey
+  - addToFileReturnArrayByOrder
+  - addToReturnArray
+  - addToReturnArrayByKey
+  - addToReturnArrayByOrder
+
 ## [0.1.0] - 2020-06-15
 
 ### Added
@@ -22,5 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove using global argv in [`RectorContainerConfigurator`](src/RectorContainerConfigurator.php) ([#34](https://github.com/crmplease/coder/pull/34)).
 
 [unreleased]: https://github.com/crmplease/coder/compare/0.1.0...HEAD
+[0.1.1]: https://github.com/crmplease/coder/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/crmplease/coder/compare/0.0.1...0.1.0
 [0.0.1]: https://github.com/crmplease/coder/releases/tag/0.0.1
