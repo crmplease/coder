@@ -20,6 +20,9 @@ return [
     '1',
     '2',
     'test',
+    function ($param) {
+        return $param ?: null;
+    },
     FooClass::class,
     FooClass::TEST,
     false,

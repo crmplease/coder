@@ -17,8 +17,8 @@ class AddToFileReturnArrayByKeyTest extends FunctionalTestCase
         $coder->addToFileReturnArrayByKey(
             $this->createFixtureFile($fixture),
             ['path1'],
-            'key1',
-            'value1'
+            'key2',
+            'value2'
         );
         $this->assertFixture($fixture);
     }

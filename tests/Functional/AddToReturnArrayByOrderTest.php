@@ -18,7 +18,7 @@ class AddToReturnArrayByOrderTest extends FunctionalTestCase
             $this->createFixtureFile($fixture),
             'getArray',
             ['path1'],
-            'value1'
+            'value2'
         );
         $this->assertFixture($fixture);
     }

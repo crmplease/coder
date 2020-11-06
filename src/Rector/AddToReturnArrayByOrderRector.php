@@ -8,8 +8,9 @@ use Crmplease\Coder\Constant;
 use Crmplease\Coder\Helper\AddToArrayByOrderHelper;
 use Crmplease\Coder\Helper\CheckMethodHelper;
 use Crmplease\Coder\Helper\NodeArrayHelper;
+use Crmplease\Coder\Helper\ReturnStatementHelper;
 use PhpParser\Node;
-use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\RectorDefinition\CodeSample;
 use Rector\Core\RectorDefinition\RectorDefinition;
@@ -22,6 +23,7 @@ class AddToReturnArrayByOrderRector extends AbstractRector
     private $checkMethodHelper;
     private $nodeArrayHelper;
     private $addToArrayByOrderHelper;
+    private $returnStatementHelper;
     private $method = '';
     private $path = [];
     private $value;
@@ -29,12 +31,14 @@ class AddToReturnArrayByOrderRector extends AbstractRector
     public function __construct(
         CheckMethodHelper $checkMethodHelper,
         NodeArrayHelper $nodeArrayHelper,
-        AddToArrayByOrderHelper $addToArrayByOrderHelper
+        AddToArrayByOrderHelper $addToArrayByOrderHelper,
+        ReturnStatementHelper $returnStatementHelper
     )
     {
         $this->checkMethodHelper = $checkMethodHelper;
         $this->nodeArrayHelper = $nodeArrayHelper;
         $this->addToArrayByOrderHelper = $addToArrayByOrderHelper;
+        $this->returnStatementHelper = $returnStatementHelper;
     }
 
     /**
@@ -104,7 +108,7 @@ PHP
 
     public function getNodeTypes(): array
     {
-        return [Return_::class];
+        return [ClassMethod::class];
     }
 
     /**
@@ -115,14 +119,18 @@ PHP
      */
     public function refactor(Node $node): ?Node
     {
-        if (!$node instanceof Return_) {
+        if (!$node instanceof ClassMethod) {
             return null;
         }
         if (!$this->checkMethodHelper->checkMethod($this->method, $node)) {
             return null;
         }
+        $returnStatement = $this->returnStatementHelper->getLastReturnForClassMethod($node);
+        if ($returnStatement === null) {
+            return null;
+        }
 
-        $arrayNode = $this->nodeArrayHelper->getFromReturnStatement($node);
+        $arrayNode = $this->nodeArrayHelper->getFromReturnStatement($returnStatement);
         $arrayNode = $this->nodeArrayHelper->findOrAddArrayByPath($this->path, $arrayNode);
         $this->addToArrayByOrderHelper->addToArrayByOrder($this->value, $arrayNode);
         return $node;

@@ -18,6 +18,7 @@ services:
   Crmplease\Coder\Helper\NameNodeHelper: null
   Crmplease\Coder\Helper\NodeArrayHelper: null
   Crmplease\Coder\Helper\PhpdocHelper: null
+  Crmplease\Coder\Helper\ReturnStatementHelper: null
 
   # rectors
   Crmplease\Coder\Rector\AddToFileReturnArrayByOrderRector: null

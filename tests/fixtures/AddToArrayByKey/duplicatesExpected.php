@@ -10,6 +10,9 @@ return [
     1 => 'int1',
     'key0' => 'value0',
     'key1' => 'value1',
+    'closure' => function ($param) {
+        return $param ?: null;
+    },
     FooClass::class => 'foo class',
     FooClass::TEST => 'foo constant',
 ];
