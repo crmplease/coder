@@ -7,6 +7,7 @@ use Crmplease\Coder\Code;
 use Crmplease\Coder\Constant;
 use Crmplease\Coder\Helper\AddToArrayByOrderHelper;
 use Crmplease\Coder\Helper\NodeArrayHelper;
+use Crmplease\Coder\Helper\ReturnStatementHelper;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Rector\AbstractRector;
@@ -20,13 +21,15 @@ class AddToFileReturnArrayByOrderRector extends AbstractRector
 {
     private $nodeArrayHelper;
     private $addToArrayByOrderHelper;
+    private $returnStatementHelper;
     private $path = [];
     private $value;
 
-    public function __construct(NodeArrayHelper $nodeArrayHelper, AddToArrayByOrderHelper $addToArrayByOrderHelper)
+    public function __construct(NodeArrayHelper $nodeArrayHelper, AddToArrayByOrderHelper $addToArrayByOrderHelper, ReturnStatementHelper $returnStatementHelper)
     {
         $this->nodeArrayHelper = $nodeArrayHelper;
         $this->addToArrayByOrderHelper = $addToArrayByOrderHelper;
+        $this->returnStatementHelper = $returnStatementHelper;
     }
 
     /**
@@ -85,6 +88,9 @@ PHP
     public function refactor(Node $node): ?Node
     {
         if (!$node instanceof Return_) {
+            return null;
+        }
+        if ($this->returnStatementHelper->isReturnNodeForClosure($node)) {
             return null;
         }
 

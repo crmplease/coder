@@ -22,6 +22,9 @@ return [
     '1',
     '2',
     'test',
+    function ($param) {
+        return $param ?: null;
+    },
     FooClass::class,
     FooClass::TEST,
     [2, 'string', \Tests\Crmplease\Coder\fixtures\BarClass::class, \Tests\Crmplease\Coder\fixtures\BarClass::TEST, Rule::unique('countries')->ignore($country->getKey())],

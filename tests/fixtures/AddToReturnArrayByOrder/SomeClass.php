@@ -11,6 +11,10 @@ class SomeClass
         return [
             'path1' => [
                 'value0',
+                function ($param) {
+                    return $param ?: null;
+                },
+                'value1',
             ],
         ];
     }
