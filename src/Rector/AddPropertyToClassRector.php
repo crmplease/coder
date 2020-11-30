@@ -14,12 +14,11 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareVarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Exception\NotImplementedException;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\RectorDefinition\CodeSample;
 use Rector\Core\RectorDefinition\RectorDefinition;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use function array_merge;
 use function array_slice;
 use function count;
@@ -42,7 +41,6 @@ class AddPropertyToClassRector extends AbstractRector
     ];
 
     private $phpdocHelper;
-    private $phpDocInfoFactory;
     private $getPropertyPropertyHelper;
     private $convertToAstHelper;
     private $property = '';
@@ -54,13 +52,11 @@ class AddPropertyToClassRector extends AbstractRector
 
     public function __construct(
         PhpdocHelper $phpdocHelper,
-        PhpDocInfoFactory $phpDocInfoFactory,
         GetPropertyPropertyHelper $getPropertyPropertyHelper,
         ConvertToAstHelper $convertToAstHelper
     )
     {
         $this->phpdocHelper = $phpdocHelper;
-        $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->getPropertyPropertyHelper = $getPropertyPropertyHelper;
         $this->convertToAstHelper = $convertToAstHelper;
     }

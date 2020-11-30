@@ -17,13 +17,11 @@ use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTextNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareReturnTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Exception\NotImplementedException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\RectorDefinition\CodeSample;
 use Rector\Core\RectorDefinition\RectorDefinition;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use function array_flip;
 use function array_merge;
 use function array_values;
 use function ltrim;
@@ -46,7 +44,6 @@ class AddMethodToClassRector extends AbstractRector
     ];
 
     private $phpdocHelper;
-    private $phpDocInfoFactory;
     private $convertToAstHelper;
     private $method = '';
     private $visibility = self::VISIBILITY_PRIVATE;
@@ -59,12 +56,10 @@ class AddMethodToClassRector extends AbstractRector
 
     public function __construct(
         PhpdocHelper $phpdocHelper,
-        PhpDocInfoFactory $phpDocInfoFactory,
         ConvertToAstHelper $convertToAstHelper
     )
     {
         $this->phpdocHelper = $phpdocHelper;
-        $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->convertToAstHelper = $convertToAstHelper;
     }
 
