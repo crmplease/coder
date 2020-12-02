@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Update dependency rector/rector from ^^0.7.1 to ^0.8.56
+- Update dev dependency phpunit/phpunit from ^9.0 to ^9.4.3
 
 ## [0.1.1] - 2020-11-06
 
@@ -32,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix convert constant to ast when auto import classes is enabled ([#29](https://github.com/crmplease/coder/pull/29)).
 - Remove using global argv in [`RectorContainerConfigurator`](src/RectorContainerConfigurator.php) ([#34](https://github.com/crmplease/coder/pull/34)).
 
-[unreleased]: https://github.com/crmplease/coder/compare/0.1.0...HEAD
+[unreleased]: https://github.com/crmplease/coder/compare/0.1.1...HEAD
 [0.1.1]: https://github.com/crmplease/coder/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/crmplease/coder/compare/0.0.1...0.1.0
 [0.0.1]: https://github.com/crmplease/coder/releases/tag/0.0.1

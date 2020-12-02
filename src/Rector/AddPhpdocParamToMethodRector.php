@@ -9,17 +9,14 @@ use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareParamTagValueNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\RectorDefinition\CodeSample;
 use Rector\Core\RectorDefinition\RectorDefinition;
-use Symplify\PackageBuilder\Parameter\ParameterProvider;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use function ltrim;
 
 /**
@@ -28,10 +25,7 @@ use function ltrim;
 class AddPhpdocParamToMethodRector extends AbstractRector
 {
     private $phpdocHelper;
-    private $parameterProvider;
     private $checkMethodHelper;
-    private $phpDocParser;
-    private $lexer;
     private $method = '';
     private $parameter = '';
     private $parameterType = '';
@@ -39,17 +33,11 @@ class AddPhpdocParamToMethodRector extends AbstractRector
 
     public function __construct(
         PhpdocHelper $phpDocHelper,
-        ParameterProvider $parameterProvider,
-        CheckMethodHelper $checkMethodHelper,
-        PhpDocParser $phpDocParser,
-        Lexer $lexer
+        CheckMethodHelper $checkMethodHelper
     )
     {
         $this->phpdocHelper = $phpDocHelper;
-        $this->parameterProvider = $parameterProvider;
         $this->checkMethodHelper = $checkMethodHelper;
-        $this->phpDocParser = $phpDocParser;
-        $this->lexer = $lexer;
     }
 
     /**

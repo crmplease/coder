@@ -906,7 +906,7 @@ $config = (new Config())
 
 ### Auto import classes
 
-By default auto import classes is disabled by [rector.yaml](rector.yaml). You can change default value or use mapping/callback for enable/disable auto import classes:
+By default auto import classes is disabled by [`config/rector.php`](config/rector.php). You can change default value or use mapping/callback for enable/disable auto import classes:
 
 ```php
 use Crmplease\Coder\Config;
@@ -940,42 +940,37 @@ $config = (new Config())
 
 ### Path to rector config path
 
-Rector config file for coder is [`rector.yaml`](rector.yaml). You can provide path to your own config file with redeclare values from [`rector.yaml`](rector.yaml) or add new one:
+Rector config file for coder is [`config/rector.php`](config/rector.php). You can provide path to your own config file with redeclare values from [`config/rector.php`](config/rector.php) or add new one:
 
 ```php
 use Crmplease\Coder\Config;
 
 $config = (new Config())
-    ->setRectorConfigPath('/path/to/rector.yaml');
+    ->setRectorConfigPath('/path/to/rector.php');
 ```
 
 For more information about rector configuration see rector [documentation](https://github.com/rectorphp/rector).
 
 ## Internals
 
-If you want to auto import classes, then change `parameters.auto_import_names` to `true` in [rector.yaml](rector.yaml).
+If you want to auto import classes, then change `parameters.auto_import_names` to `true` in [`config/rector.php`](config/rector.php).
 
 You can run Rector using command line interface:
 ```bash
-vendor/bin/rector process --config path/to/project/rector.yaml\\
+vendor/bin/rector process --config path/to/project/rector.php\\
    --autoload-file path/to/project/vendor/autoload.php\\
    --only "\Crmplease\Coder\Rector\AddToReturnArrayByOrderRector"\\
    path/to/project/Path/To/Class.php
 ```
 
-But command line interface doesn't allow to pass parameters to rectors. You can pass parameters using setters in config file [rector.yaml](rector.yaml) config. For example:
-```yaml
-  Crmplease\Coder\Rector\AddToReturnArrayByOrderRector:
-    calls:
-      - method: setMethod
-        arguments:
-          - 'getArray'
-      - method: setPath
-        arguments:
-          - ['level1', 'level2']
-      - method: setValue
-        arguments:
-          - 'newValue'
+But command line interface doesn't allow to pass parameters to rectors. You can pass parameters using setters in config file [`config/rector.php`](config/rector.php) config. For example:
+```php
+    // ...
+    $services->set(Rector\AddToReturnArrayByOrderRector::class)
+        ->call('setMethod', ['getArray'])
+        ->call('setPath', ['level1', 'level2'])
+        ->call('setValue', ['newValue']);
+    // ...
 ```
 
 ### AddToFileReturnArrayByOrderRector

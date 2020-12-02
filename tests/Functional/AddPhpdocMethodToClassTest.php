@@ -16,7 +16,7 @@ use Tests\Crmplease\Coder\FunctionalTestCase;
  */
 class AddPhpdocMethodToClassTest extends FunctionalTestCase
 {
-    public function testNewProperty(): void
+    public function testNewMethod(): void
     {
         $fixture = 'NewMethod';
         $coder = $this->getCoder();

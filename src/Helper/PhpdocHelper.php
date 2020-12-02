@@ -21,15 +21,14 @@ use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocNode;
-use Rector\CodingStyle\Application\UseAddingCommander;
+use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\PHPStan\Type\FullyQualifiedObjectType;
+use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
-use function addslashes;
 use function count;
 use function explode;
 use function gettype;
@@ -48,19 +47,19 @@ use function strpos;
 class PhpdocHelper
 {
     private $parameterProvider;
-    private $useAddingCommander;
+    private $useNodesToAddCollector;
     private $phpDocParser;
     private $lexer;
 
     public function __construct(
         ParameterProvider $parameterProvider,
-        UseAddingCommander $useAddingCommander,
-        PhpDocParser $phpDocParser,
+        UseNodesToAddCollector $useNodesToAddCollector,
+        BetterPhpDocParser $phpDocParser,
         Lexer $lexer
     )
     {
         $this->parameterProvider = $parameterProvider;
-        $this->useAddingCommander = $useAddingCommander;
+        $this->useNodesToAddCollector = $useNodesToAddCollector;
         $this->phpDocParser = $phpDocParser;
         $this->lexer = $lexer;
     }
@@ -83,7 +82,7 @@ class PhpdocHelper
                 continue;
             }
 
-            $this->useAddingCommander->addUseImport($node, new FullyQualifiedObjectType(ltrim($type, '\\')));
+            $this->useNodesToAddCollector->addUseImport($node, new FullyQualifiedObjectType(ltrim($type, '\\')));
             $parts = explode('\\', $type);
             $type = $parts[count($parts) - 1];
         }
@@ -100,7 +99,7 @@ class PhpdocHelper
         $tokens = $this->lexer->tokenize($input);
         $tokenIterator = new TokenIterator($tokens);
         /** @var AttributeAwarePhpDocNode $phpDocNode */
-        $phpDocNode = $this->phpDocParser ->parse($tokenIterator);
+        $phpDocNode = $this->phpDocParser->parse($tokenIterator);
         $varTagValue = $phpDocNode->getVarTagValues()[0] ?? null;
         if ($varTagValue === null) {
             return new IdentifierTypeNode('mixed');
