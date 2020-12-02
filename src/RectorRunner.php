@@ -13,10 +13,9 @@ use Rector\Core\Application\TokensByFilePathStorage;
 use Rector\Core\Configuration\Configuration;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Output\OutputFormatterCollector;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Parser\Parser;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\Testing\Application\EnabledRectorsProvider;
+use Rector\Testing\Application\EnabledRectorsProvider;
 use Rector\NodeTypeResolver\FileSystem\CurrentFileInfoProvider;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
@@ -82,7 +81,6 @@ class RectorRunner
      * @param string $file
      * @param AbstractRector $rector
      *
-     * @throws ShouldNotHappenException
      * @throws FileNotFoundException
      * @throws RectorException
      */
@@ -126,6 +124,9 @@ class RectorRunner
         // workaround clear errorAndDiffCollector
         $this->privatesAccessor->setPrivateProperty($this->errorAndDiffCollector, 'errors', []);
         $this->privatesAccessor->setPrivateProperty($this->errorAndDiffCollector, 'fileDiffs', []);
+        // workaround clear for fix formatting issues when refactor file second time
+        $this->privatesAccessor->setPrivateProperty($this->tokensByFilePathStorage, 'tokensByFilePath', []);
+        $this->privatesAccessor->setPrivateProperty($this->parser, 'nodesByFile', []);
 
         if ($errors) {
             $messages = [];

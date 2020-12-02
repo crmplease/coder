@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Crmplease\Coder;
 
-use Rector\Caching\ChangedFilesDetector;
+use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Bootstrap\ConfigShifter;
 use Rector\Core\Bootstrap\RectorConfigsResolver;
 use Rector\Core\Configuration\Configuration;
 use Rector\Core\DependencyInjection\RectorContainerFactory;
 use Rector\Core\Set\SetResolver;
-use Rector\Set\SetProvider;
+use Rector\Set\RectorSetProvider;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symplify\SetConfigResolver\ConfigResolver;
@@ -20,8 +20,8 @@ use function array_merge;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
- * Based on https://github.com/rectorphp/rector/blob/v0.7.65/src/Bootstrap/RectorConfigsResolver.php
- * @see https://github.com/rectorphp/rector/blob/v0.7.65/src/Bootstrap/RectorConfigsResolver.php
+ * Based on https://github.com/rectorphp/rector/blob/0.8.56/src/Bootstrap/RectorConfigsResolver.php
+ * @see https://github.com/rectorphp/rector/blob/0.8.56/src/Bootstrap/RectorConfigsResolver.php
  * @see RectorConfigsResolver
  */
 class RectorContainerConfigurator
@@ -36,8 +36,8 @@ class RectorContainerConfigurator
         $this->config = $config;
         $this->setResolver = new SetResolver();
         $this->configResolver = new ConfigResolver();
-        $setProvider = new SetProvider();
-        $this->setAwareConfigResolver = new SetAwareConfigResolver($setProvider);
+        $rectorSetProvider = new RectorSetProvider();
+        $this->setAwareConfigResolver = new SetAwareConfigResolver($rectorSetProvider);
     }
 
     /**
@@ -59,7 +59,6 @@ class RectorContainerConfigurator
 
     /**
      * @return SmartFileInfo[]
-     * @noRector
      */
     protected function provide(): array
     {
@@ -76,7 +75,7 @@ class RectorContainerConfigurator
         // And from --config or default one
         $inputOrFallbackConfigFileInfo = $this->configResolver->resolveFromInputWithFallback(
             $argvInput,
-            ['rector.yaml'],
+            ['config/rector.php'],
         );
 
         if ($inputOrFallbackConfigFileInfo !== null) {
@@ -89,8 +88,8 @@ class RectorContainerConfigurator
     }
 
     /**
-     * Based on https://github.com/rectorphp/rector/blob/v0.7.65/bin/rector, between try...catch
-     * @see https://github.com/rectorphp/rector/blob/v0.7.65/bin/rector
+     * Based on https://github.com/rectorphp/rector/blob/0.8.56/bin/rector, between try...catch
+     * @see https://github.com/rectorphp/rector/blob/0.8.56/bin/rector
      *
      * @return ContainerInterface
      * @throws FileNotFoundException
@@ -98,7 +97,7 @@ class RectorContainerConfigurator
     public function configureContainer(): ContainerInterface
     {
         $configFileInfos = $this->provide();
-        $configFileInfos[] = new SmartFileInfo(__DIR__ . '/../rector.yaml');
+        $configFileInfos[] = new SmartFileInfo(__DIR__ . '/../config/rector.php');
 
         // Build DI container
         $rectorContainerFactory = new RectorContainerFactory();

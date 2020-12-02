@@ -21,9 +21,9 @@ use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocNode;
+use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\PHPStan\Type\FullyQualifiedObjectType;
@@ -54,7 +54,7 @@ class PhpdocHelper
     public function __construct(
         ParameterProvider $parameterProvider,
         UseNodesToAddCollector $useNodesToAddCollector,
-        PhpDocParser $phpDocParser,
+        BetterPhpDocParser $phpDocParser,
         Lexer $lexer
     )
     {
@@ -99,7 +99,7 @@ class PhpdocHelper
         $tokens = $this->lexer->tokenize($input);
         $tokenIterator = new TokenIterator($tokens);
         /** @var AttributeAwarePhpDocNode $phpDocNode */
-        $phpDocNode = $this->phpDocParser ->parse($tokenIterator);
+        $phpDocNode = $this->phpDocParser->parse($tokenIterator);
         $varTagValue = $phpDocNode->getVarTagValues()[0] ?? null;
         if ($varTagValue === null) {
             return new IdentifierTypeNode('mixed');

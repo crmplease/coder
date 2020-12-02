@@ -164,7 +164,7 @@ class ConfigTest extends FunctionalTestCase
     {
         $fixture = 'autoImportEnabled';
         $config = (new Config())
-            ->setRectorConfigPath(__DIR__ . '/../fixtures/Config/autoImportEnabled.yaml')
+            ->setRectorConfigPath(__DIR__ . '/../fixtures/Config/autoImportEnabledConfig.php')
             ->setShowProgressBar(false);
         $coder = Coder::create($config);
         $coder->addToFileReturnArrayByOrder(

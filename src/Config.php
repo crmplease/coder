@@ -34,7 +34,7 @@ class Config
     }
 
     /**
-     * @param callable|array|bool|null $autoImport if null, the use default value from rector.yaml;
+     * @param callable|array|bool|null $autoImport if null, the use default value from config/rector.php;
      *        if true, the auto import will be always enabled;
      *        if false, the auto import will be always disabled;
      *        if array, they file name is used as key, value can be true/false/null;

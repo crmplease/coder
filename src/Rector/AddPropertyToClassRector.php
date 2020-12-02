@@ -229,7 +229,7 @@ PHP
 
             /** @var PhpDocInfo $phpDocInfo */
             $phpDocInfo = $propertyNode->getAttribute(AttributeKey::PHP_DOC_INFO);
-            $varTagValueNode = $phpDocInfo->getVarTagValue();
+            $varTagValueNode = $phpDocInfo->getVarTagValueNode();
             if ($typePhpDoc) {
                 if ($varTagValueNode) {
                     $varTagValueNode->type = $typePhpDoc;
