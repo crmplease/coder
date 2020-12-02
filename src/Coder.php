@@ -20,7 +20,6 @@ use Crmplease\Coder\Rector\AddTraitToClassRector;
 use Crmplease\Coder\Rector\ChangeClassParentRector;
 use Crmplease\Coder\Rector\RectorException;
 use Crmplease\Coder\Rector\RemoveTraitFromClassRector;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Symplify\SmartFileSystem\Exception\FileNotFoundException;
 
 /**
@@ -111,7 +110,6 @@ class Coder
      * @param string|float|int|array|Constant|Code $value
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addToFileReturnArrayByOrder(string $file, array $path, $value): void
@@ -129,7 +127,6 @@ class Coder
      * @param string|float|int|array|Constant|Code $value
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addToReturnArrayByOrder(string $file, string $method, array $path, $value): void
@@ -148,7 +145,6 @@ class Coder
      * @param string|float|int|array|Constant|Code $value
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addToPropertyArrayByOrder(string $file, string $property, array $path, $value): void
@@ -167,7 +163,6 @@ class Coder
      * @param string|float|int|array|Constant|Code $value
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addToFileReturnArrayByKey(string $file, array $path, $key, $value): void
@@ -187,7 +182,6 @@ class Coder
      * @param string|float|int|array|Constant|Code $value
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addToReturnArrayByKey(string $file, string $method, array $path, $key, $value): void
@@ -208,7 +202,6 @@ class Coder
      * @param string|float|int|array|Constant|Code $value
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addToPropertyArrayByKey(string $file, string $property, array $path, $key, $value): void
@@ -227,7 +220,6 @@ class Coder
      * @param array $array
      *
      * @throws RectorException
-     * @throws ShouldNotHappenException
      * @throws FileNotFoundException
      */
     public function addToFileReturnArray(string $file, array $path, array $array): void
@@ -259,7 +251,6 @@ class Coder
      * @param array $array
      *
      * @throws RectorException
-     * @throws ShouldNotHappenException
      * @throws FileNotFoundException
      */
     public function addToReturnArray(string $file, string $method, array $path, array $array): void
@@ -294,7 +285,6 @@ class Coder
      *
      * @throws FileNotFoundException
      * @throws RectorException
-     * @throws ShouldNotHappenException
      */
     public function addToPropertyArray(string $file, string $property, array $path, array $array): void
     {
@@ -332,7 +322,6 @@ class Coder
      * @param string $description
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addPropertyToClass(
@@ -364,7 +353,6 @@ class Coder
      * @param string|float|int|array|Constant|Code|null $value
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addParameterToMethod(
@@ -391,7 +379,6 @@ class Coder
      * @param string $code
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addCodeToMethod(string $file, string $method, string $code): void
@@ -415,7 +402,6 @@ class Coder
      *
      * @throws FileNotFoundException
      * @throws RectorException
-     * @throws ShouldNotHappenException
      */
     public function addMethodToClass(
         string $file,
@@ -446,7 +432,6 @@ class Coder
      * @param string $trait
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addTraitToClass(string $file, string $trait): void
@@ -461,7 +446,6 @@ class Coder
      * @param string $trait
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function removeTraitFromClass(string $file, string $trait): void
@@ -479,7 +463,6 @@ class Coder
      * @param string $description
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addPhpdocParamToMethod(
@@ -503,7 +486,6 @@ class Coder
      * @param PhpdocProperty $property
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addPhpdocPropertyToClass(string $file, PhpdocProperty $property): void
@@ -520,7 +502,6 @@ class Coder
      * @param PhpdocProperty[] $properties
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addPhpdocPropertiesToClass(string $file, array $properties): void
@@ -538,7 +519,6 @@ class Coder
      * @param PhpdocMethod $method
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addPhpdocMethodToClass(string $file, PhpdocMethod $method): void
@@ -557,7 +537,6 @@ class Coder
      * @param PhpdocMethod[] $methods
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function addPhpdocMethodsToClass(string $file, array $methods): void
@@ -575,7 +554,6 @@ class Coder
      * @param string $parentClass
      *
      * @throws FileNotFoundException
-     * @throws ShouldNotHappenException
      * @throws RectorException
      */
     public function changeClassParent(string $file, string $parentClass): void
