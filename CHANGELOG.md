@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update dependency rector/rector from ^^0.7.1 to ^0.8.56
 - Update dev dependency phpunit/phpunit from ^9.0 to ^9.4.3
+- Fix next dependencies in [`composer.json`](composer.json):
+  - nikic/php-parser:^4.10
+  - phpstan/phpdoc-parser:^0.4.9
+  - symfony/dependency-injection:^5.2
+  - symplify/set-config-resolver:^8.3
+  - symplify/smart-file-system:^8.3
+  - symplify/package-builder:^8.3
+  - symfony/console:^5.2
 
 ## [0.1.1] - 2020-11-06
 
