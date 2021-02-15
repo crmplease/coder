@@ -16,8 +16,8 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use function ltrim;
 use function strpos;
 
@@ -96,9 +96,9 @@ class AddParameterToMethodRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Add parameter "parameter2" with type "string" value "defaultValue" to method "foo" with check duplicates', [
+        return new RuleDefinition('Add parameter "parameter2" with type "string" value "defaultValue" to method "foo" with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass
@@ -148,22 +148,33 @@ PHP
         }
         $isParameterClass = strpos($this->parameterType, '\\') !== false;
         $parameterType = ltrim($parameterType, '\\');
-        $parameterTypeClass = $parameterType;
+        $parameterTypeCleared = $parameterType;
         if ($isParameterNullable) {
             $parameterType = "?{$parameterType}";
+        }
+
+        $typeNode = null;
+        if ($parameterType) {
+            if ($isParameterClass) {
+                $typeNode = new FullyQualified($parameterTypeCleared);
+            } else {
+                $typeNode = new Identifier($parameterTypeCleared);
+            }
+            if ($isParameterNullable) {
+                $typeNode = new NullableType($typeNode);
+            }
         }
 
         foreach ($node->params as $parameterNode) {
             if ($parameterNode->var->name === $this->parameter) {
                 if ((bool)$parameterNode->type !== (bool)$parameterType) {
-                    if ($parameterNode->type) {
-                        throw new RectorException("Parameter '{$this->parameter}' already exist, but has type");
-                    }
-                    throw new RectorException("Parameter '{$this->parameter}' already exist, but hasn't type");
+                    $parameterNode->type = $typeNode;
                 }
-                $currentParameterType = $this->nameNodeHelper->getNameByTypeNode($parameterNode->type);
-                if ($currentParameterType !== $parameterType) {
-                    throw new RectorException("Parameter '{$this->parameter}' already exist, but has type '{$currentParameterType}'");
+                if ($parameterNode->type) {
+                    $currentParameterType = $this->nameNodeHelper->getNameByTypeNode($parameterNode->type);
+                    if ($currentParameterType !== $parameterType) {
+                        $parameterNode->type = $typeNode;
+                    }
                 }
                 if ($this->hasValue) {
                     $parameterNode->default = $this->convertToAstHelper->simpleValueOrArrayToAst($this->value);
@@ -171,18 +182,6 @@ PHP
                     $parameterNode->default = null;
                 }
                 return $node;
-            }
-        }
-
-        $typeNode = null;
-        if ($parameterType) {
-            if ($isParameterClass) {
-                $typeNode = new FullyQualified($parameterTypeClass);
-            } else {
-                $typeNode = new Identifier($this->parameterType);
-            }
-            if ($isParameterNullable) {
-                $typeNode = new NullableType($typeNode);
             }
         }
 

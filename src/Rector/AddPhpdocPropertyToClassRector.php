@@ -10,13 +10,10 @@ use PhpParser\Node\Stmt\Class_;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareInvalidTagValueNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePropertyTagValueNode;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use function get_class;
 
 /**
@@ -58,7 +55,7 @@ class AddPhpdocPropertyToClassRector extends AbstractRector
      *
      * @return $this
      */
-    public function setPropertyType(?string $propertyType): self
+    public function setPropertyType(string $propertyType): self
     {
         $this->propertyType = $propertyType;
         return $this;
@@ -75,9 +72,9 @@ class AddPhpdocPropertyToClassRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Add to phpdoc @property property "property2" with type "string" and description "description" to class with check duplicates', [
+        return new RuleDefinition('Add to phpdoc @property property "property2" with type "string" and description "description" to class with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 /**
@@ -110,8 +107,6 @@ PHP
      * @param Node $node
      *
      * @return Node|null
-     * @throws RectorException
-     * @throws ShouldNotHappenException
      */
     public function refactor(Node $node): ?Node
     {
@@ -123,8 +118,9 @@ PHP
         $propertyType = $this->phpdocHelper->simplifyFqnForType($propertyType, $node);
         $typeTagNode = $this->phpdocHelper->createTypeTagNodeByString($propertyType);
 
-        /** @var PhpDocInfo $phpDocInfo */
-        $phpDocInfo = $node->getAttribute(AttributeKey::PHP_DOC_INFO);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocInfo->markAsChanged();
+
         $propertyTagNodes = $phpDocInfo->getTagsByName('property');
         foreach ($propertyTagNodes as $propertyTagNode) {
             $value = $propertyTagNode->value;

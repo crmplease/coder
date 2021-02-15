@@ -17,6 +17,6 @@ return [
         return $param ?: null;
     },
     FOO_TEST => 'foo constant',
-    FooClass::class => 'foo class',
-    FooClass::TEST => 'foo class constant replaced',
+    FooClass::class => 'foo class replaced',
+    FooClass::TEST => 'foo class constant',
 ];

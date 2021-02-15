@@ -8,5 +8,5 @@ namespace Tests\Crmplease\Coder\fixtures;
  */
 class BazClass
 {
-    public const TEST = 'baz value';
+    public const TEST = 'baz class constant value';
 }

@@ -8,19 +8,19 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
-use Rector\Core\PhpParser\NodeTraverser\CallableNodeTraverser;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Symplify\Astral\NodeTraverser\SimpleCallableNodeTraverser;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
 class ReturnStatementHelper
 {
-    private $callableNodeTraverser;
+    private $simpleCallableNodeTraverser;
 
-    public function __construct(CallableNodeTraverser $callableNodeTraverser)
+    public function __construct(SimpleCallableNodeTraverser $simpleCallableNodeTraverser)
     {
-        $this->callableNodeTraverser = $callableNodeTraverser;
+        $this->simpleCallableNodeTraverser = $simpleCallableNodeTraverser;
     }
 
     public function isReturnNodeForClosure(Return_ $node): bool
@@ -37,7 +37,7 @@ class ReturnStatementHelper
     public function getLastReturnForClassMethod(ClassMethod $classMethod): ?Return_
     {
         $returnNode = null;
-        $this->callableNodeTraverser->traverseNodesWithCallable($classMethod, static function (Node $node) use(&$returnNode, &$i): void {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classMethod, static function (Node $node) use(&$returnNode, &$i): void {
             if (!$node instanceof Return_) {
                 return;
             }

@@ -8,8 +8,8 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\TraitUse;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use function array_merge;
 use function array_slice;
 use function ltrim;
@@ -32,9 +32,9 @@ class AddTraitToClassRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Add trait "\Some\MyTrait" to class with check duplicates', [
+        return new RuleDefinition('Add trait "\Some\MyTrait" to class with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass

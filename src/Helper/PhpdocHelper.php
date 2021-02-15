@@ -7,7 +7,6 @@ use Crmplease\Coder\Code;
 use Crmplease\Coder\Constant;
 use Crmplease\Coder\Rector\RectorException;
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprArrayItemNode;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprArrayNode;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprFalseNode;
@@ -25,11 +24,9 @@ use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocNode;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\PHPStan\Type\FullyQualifiedObjectType;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
-use function count;
 use function explode;
 use function gettype;
 use function implode;
@@ -69,7 +66,6 @@ class PhpdocHelper
      * @param Node $node
      *
      * @return string
-     * @throws ShouldNotHappenException
      */
     public function simplifyFqnForType(string $unionType, Node $node): string
     {
@@ -82,9 +78,9 @@ class PhpdocHelper
                 continue;
             }
 
-            $this->useNodesToAddCollector->addUseImport($node, new FullyQualifiedObjectType(ltrim($type, '\\')));
-            $parts = explode('\\', $type);
-            $type = $parts[count($parts) - 1];
+            $objectType = new FullyQualifiedObjectType(ltrim($type, '\\'));
+            $this->useNodesToAddCollector->addUseImport($node, $objectType);
+            $type = $objectType->getShortName();
         }
         unset($type);
         return implode('|', $types);
@@ -110,7 +106,7 @@ class PhpdocHelper
     /**
      * @param string|float|int|bool|null $value
      *
-     * @return Expr
+     * @return ConstExprNode
      * @throws RectorException
      */
     public function simpleValueToAst($value): ConstExprNode

@@ -8,7 +8,6 @@ use Rector\Core\Bootstrap\ConfigShifter;
 use Rector\Core\Bootstrap\RectorConfigsResolver;
 use Rector\Core\Configuration\Configuration;
 use Rector\Core\DependencyInjection\RectorContainerFactory;
-use Rector\Core\Set\SetResolver;
 use Rector\Set\RectorSetProvider;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -20,21 +19,19 @@ use function array_merge;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
- * Based on https://github.com/rectorphp/rector/blob/0.8.56/src/Bootstrap/RectorConfigsResolver.php
- * @see https://github.com/rectorphp/rector/blob/0.8.56/src/Bootstrap/RectorConfigsResolver.php
+ * Based on https://github.com/rectorphp/rector/blob/0.9.28/src/Bootstrap/RectorConfigsResolver.php
+ * @see https://github.com/rectorphp/rector/blob/0.9.28/src/Bootstrap/RectorConfigsResolver.php
  * @see RectorConfigsResolver
  */
 class RectorContainerConfigurator
 {
     private $config;
-    private $setResolver;
     private $configResolver;
     private $setAwareConfigResolver;
 
     public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->setResolver = new SetResolver();
         $this->configResolver = new ConfigResolver();
         $rectorSetProvider = new RectorSetProvider();
         $this->setAwareConfigResolver = new SetAwareConfigResolver($rectorSetProvider);
@@ -65,12 +62,7 @@ class RectorContainerConfigurator
         $configFileInfos = [];
 
         // Detect configuration from --set
-        $argvInput = new ArgvInput();
-
-        $set = $this->setResolver->resolveSetFromInput($argvInput);
-        if ($set !== null) {
-            $configFileInfos[] = $set->getSetFileInfo();
-        }
+        $argvInput = new ArgvInput([]);
 
         // And from --config or default one
         $inputOrFallbackConfigFileInfo = $this->configResolver->resolveFromInputWithFallback(
@@ -88,8 +80,8 @@ class RectorContainerConfigurator
     }
 
     /**
-     * Based on https://github.com/rectorphp/rector/blob/0.8.56/bin/rector, between try...catch
-     * @see https://github.com/rectorphp/rector/blob/0.8.56/bin/rector
+     * Based on https://github.com/rectorphp/rector/blob/0.9.28/bin/rector.php, between try...catch
+     * @see https://github.com/rectorphp/rector/blob/0.9.28/bin/rector.php
      *
      * @return ContainerInterface
      * @throws FileNotFoundException
@@ -115,14 +107,16 @@ class RectorContainerConfigurator
         /** @var ContainerInterface $container */
         $container = $rectorContainerFactory->createFromConfigs($configFileInfos);
 
-        /** @var Configuration $configuration */
-        $configuration = $container->get(Configuration::class);
-        $configuration->setFirstResolverConfigFileInfo($this->getFirstResolvedConfig());
 
-        if ($this->getFirstResolvedConfig()) {
+        $firstResolvedConfig = $this->getFirstResolvedConfig();
+        if ($firstResolvedConfig) {
+            /** @var Configuration $configuration */
+            $configuration = $container->get(Configuration::class);
+            $configuration->setFirstResolverConfigFileInfo($firstResolvedConfig);
+
             /** @var ChangedFilesDetector $changedFilesDetector */
             $changedFilesDetector = $container->get(ChangedFilesDetector::class);
-            $changedFilesDetector->setFirstResolvedConfigFileInfo($this->getFirstResolvedConfig());
+            $changedFilesDetector->setFirstResolvedConfigFileInfo($firstResolvedConfig);
         }
 
         return $container;

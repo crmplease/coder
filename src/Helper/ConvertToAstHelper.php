@@ -31,13 +31,6 @@ use function strpos;
  */
 class ConvertToAstHelper
 {
-    private $nameNodeHelper;
-
-    public function __construct(NameNodeHelper $nameNodeHelper)
-    {
-        $this->nameNodeHelper = $nameNodeHelper;
-    }
-
     /**
      * @param Code|Constant|string|float|int|bool|null $value
      *

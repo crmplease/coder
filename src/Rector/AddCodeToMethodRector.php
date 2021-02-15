@@ -9,8 +9,8 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
@@ -48,9 +48,9 @@ class AddCodeToMethodRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Add to method "addCode" code "$this->b = $b;" to the end of method with trying check duplicates', [
+        return new RuleDefinition('Add to method "addCode" code "$this->b = $b;" to the end of method with trying check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass

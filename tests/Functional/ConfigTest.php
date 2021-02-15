@@ -6,6 +6,8 @@ namespace Tests\Crmplease\Coder\Functional;
 use Crmplease\Coder\Coder;
 use Crmplease\Coder\Config;
 use Crmplease\Coder\Constant;
+use Crmplease\Coder\PhpdocMethod;
+use Tests\Crmplease\Coder\fixtures\BarClass;
 use Tests\Crmplease\Coder\fixtures\BazClass;
 use Tests\Crmplease\Coder\FunctionalTestCase;
 
@@ -40,6 +42,26 @@ class ConfigTest extends FunctionalTestCase
             $this->createFixtureFile($fixture),
             [],
             new Constant('\\' . BazClass::class . '::class'),
+        );
+        $this->assertFixture($fixture);
+    }
+
+    public function testAutoImportEnabledNewPhpDocMethod(): void
+    {
+        $fixture = 'AutoImportEnabledNewPhpDocMethod';
+        $config = (new Config())
+            ->setAutoImport(true)
+            ->setShowProgressBar(false);
+        $coder = Coder::create($config);
+        $coder->addPhpdocMethodToClass(
+            $this->createFixtureFile($fixture),
+            new PhpdocMethod(
+                'newMethod',
+                BarClass::class . '|null',
+                false,
+                [],
+                'description'
+            )
         );
         $this->assertFixture($fixture);
     }

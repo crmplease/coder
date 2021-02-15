@@ -7,10 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add new tests
+
+### Changed
+- Update dependency rector/rector from ^0.8.56 to ^0.9.28
+- Update dependency phpstan/phpdoc-parser from ^0.4.9 to ^0.4.10
+- Update dependency symplify/set-config-resolver from ^8.3 to ^9.1
+- Update dependency symplify/smart-file-system from ^8.3 to ^9.1
+- Update dependency symplify/package-builder from ^8.3 to ^9.1
+- Update dev dependency phpunit/phpunit from ^9.4.3 to ^9.5
+
 ## [0.2.0] - 2020-12-02
 
 ### Changed
-- Update dependency rector/rector from ^^0.7.1 to ^0.8.56 ([#38](https://github.com/crmplease/coder/pull/38))
+- Update dependency rector/rector from ^0.7.1 to ^0.8.56 ([#38](https://github.com/crmplease/coder/pull/38))
 - Update dev dependency phpunit/phpunit from ^9.0 to ^9.4.3 ([#38](https://github.com/crmplease/coder/pull/38))
 - Fix next dependencies in [`composer.json`](composer.json) ([#39](https://github.com/crmplease/coder/pull/39)):
   - nikic/php-parser:^4.10

@@ -10,8 +10,8 @@ use Crmplease\Coder\Helper\NodeArrayHelper;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @author Mougrim <rinat@mougrim.ru>
@@ -47,7 +47,7 @@ class AddToPropertyArrayByKeyRector extends AbstractRector
      *
      * @return $this
      */
-    public function setPath($path): self
+    public function setPath(array $path): self
     {
         $this->path = $path;
         return $this;
@@ -75,9 +75,9 @@ class AddToPropertyArrayByKeyRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Add to property "array" value "newValue" by "newKey" with check duplicates', [
+        return new RuleDefinition('Add to property "array" value "newValue" by "newKey" with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass
