@@ -26,6 +26,9 @@ class Constant
         return $this->constant;
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue()
     {
         if (strpos($this->constant, '::') !== false) {

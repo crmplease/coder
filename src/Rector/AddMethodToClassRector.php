@@ -16,12 +16,10 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTextNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareReturnTagValueNode;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\Core\Exception\NotImplementedException;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use function array_merge;
 use function array_values;
 use function ltrim;
@@ -45,6 +43,7 @@ class AddMethodToClassRector extends AbstractRector
 
     private $phpdocHelper;
     private $convertToAstHelper;
+    private $phpDocTagRemover;
     private $method = '';
     private $visibility = self::VISIBILITY_PRIVATE;
     private $isStatic = false;
@@ -56,11 +55,13 @@ class AddMethodToClassRector extends AbstractRector
 
     public function __construct(
         PhpdocHelper $phpdocHelper,
-        ConvertToAstHelper $convertToAstHelper
+        ConvertToAstHelper $convertToAstHelper,
+        PhpDocTagRemover $phpDocTagRemover
     )
     {
         $this->phpdocHelper = $phpdocHelper;
         $this->convertToAstHelper = $convertToAstHelper;
+        $this->phpDocTagRemover = $phpDocTagRemover;
     }
 
     /**
@@ -161,9 +162,9 @@ class AddMethodToClassRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Add protected method "method" with return type "?string", "Method description" description with check duplicates', [
+        return new RuleDefinition('Add protected method "method" with return type "?string", "Method description" description with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass
@@ -199,7 +200,6 @@ PHP
      *
      * @return Node|null
      * @throws RectorException
-     * @throws NotImplementedException
      */
     public function refactor(Node $node): ?Node
     {
@@ -248,58 +248,60 @@ PHP
         }
 
         foreach ($node->getMethods() as $method) {
-            if ($this->getName($method) === $this->method) {
-                // clear visibility bits
-                $method->flags &= ~Class_::VISIBILITY_MODIFIER_MASK;
-                $method->flags |= $flags;
-                $method->returnType = $returnTypeNode;
-
-                if ($this->isAbstract) {
-                    $method->stmts = null;
-                }
-
-                /** @var PhpDocInfo $phpDocInfo */
-                $phpDocInfo = $method->getAttribute(AttributeKey::PHP_DOC_INFO);
-                /** @var AttributeAwarePhpDocTextNode|null $textNode */
-                $textNode = null;
-                $textNodeNumber = null;
-                /** @var ReturnTagValueNode $returnTagValue */
-                $returnTagValue = null;
-                $returnTagValueNodeNumber = null;
-                foreach ($phpDocInfo->getPhpDocNode()->children as $childNumber => $child) {
-                    if (!$textNode && $child instanceof AttributeAwarePhpDocTextNode) {
-                        $textNode = $child;
-                        $textNodeNumber = $childNumber;
-                    }
-                    if (!$returnTagValue && $child instanceof AttributeAwarePhpDocTagNode && $child->value instanceof ReturnTagValueNode) {
-                        $returnTagValue = $child->value;
-                        $returnTagValueNodeNumber = $childNumber;
-                    }
-                }
-                if ($this->description) {
-                    if ($textNode) {
-                        $textNode->text = $this->description;
-                    } else {
-                        $textNode = new AttributeAwarePhpDocTextNode($this->description);
-                        $phpDocInfo->getPhpDocNode()->children = array_merge([$textNode], $phpDocInfo->getPhpDocNode()->children);
-                    }
-                } elseif ($textNodeNumber !== null) {
-                    unset($phpDocInfo->getPhpDocNode()->children[$textNodeNumber]);
-                    $phpDocInfo->getPhpDocNode()->children = array_values($phpDocInfo->getPhpDocNode()->children);
-                }
-                if ($returnTypePhpDoc) {
-                    if ($returnTagValue) {
-                        $returnTagValue->type = $returnTypePhpDoc;
-                        $returnTagValue->description = $this->returnDescription;
-                    } else {
-                        $returnTagValue = new AttributeAwareReturnTagValueNode($returnTypePhpDoc, $this->returnDescription);
-                        $phpDocInfo->addTagValueNode($returnTagValue);
-                    }
-                } elseif ($returnTagValueNodeNumber !== null) {
-                    $phpDocInfo->removeTagValueNodeFromNode($returnTagValue);
-                }
-                return $node;
+            if ($this->getName($method) !== $this->method) {
+                continue;
             }
+            // clear visibility bits
+            $method->flags &= ~Class_::VISIBILITY_MODIFIER_MASK;
+            $method->flags |= $flags;
+            $method->returnType = $returnTypeNode;
+
+            if ($this->isAbstract) {
+                $method->stmts = null;
+            }
+
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($method);
+            $phpDocInfo->markAsChanged();
+
+            /** @var AttributeAwarePhpDocTextNode|null $textNode */
+            $textNode = null;
+            $textNodeNumber = null;
+            /** @var ReturnTagValueNode $returnTagValue */
+            $returnTagValue = null;
+            $returnTagValueNodeNumber = null;
+            foreach ($phpDocInfo->getPhpDocNode()->children as $childNumber => $child) {
+                if (!$textNode && $child instanceof AttributeAwarePhpDocTextNode) {
+                    $textNode = $child;
+                    $textNodeNumber = $childNumber;
+                }
+                if (!$returnTagValue && $child instanceof AttributeAwarePhpDocTagNode && $child->value instanceof ReturnTagValueNode) {
+                    $returnTagValue = $child->value;
+                }
+            }
+
+            if ($this->description) {
+                if ($textNode) {
+                    $textNode->text = $this->description;
+                } else {
+                    $textNode = new AttributeAwarePhpDocTextNode($this->description);
+                    $phpDocInfo->getPhpDocNode()->children = array_merge([$textNode], $phpDocInfo->getPhpDocNode()->children);
+                }
+            } elseif ($textNodeNumber !== null) {
+                unset($phpDocInfo->getPhpDocNode()->children[$textNodeNumber]);
+                $phpDocInfo->getPhpDocNode()->children = array_values($phpDocInfo->getPhpDocNode()->children);
+            }
+            if ($returnTypePhpDoc) {
+                if ($returnTagValue) {
+                    $returnTagValue->type = $returnTypePhpDoc;
+                    $returnTagValue->description = $this->returnDescription;
+                } else {
+                    $returnTagValue = new AttributeAwareReturnTagValueNode($returnTypePhpDoc, $this->returnDescription);
+                    $phpDocInfo->addTagValueNode($returnTagValue);
+                }
+            } else {
+                $this->phpDocTagRemover->removeByName($phpDocInfo, 'return');
+            }
+            return $node;
         }
 
         $returnStatement = null;
@@ -326,12 +328,19 @@ PHP
                 }
             }
         }
+        $methodStatements = ([]);
+        if ($this->isAbstract) {
+            $methodStatements = (null);
+        }
+        if ($returnStatement) {
+            $methodStatements = [$returnStatement];
+        }
         $method = new ClassMethod(
             $this->method,
             [
                 'flags' => $flags,
                 'returnType' => $returnTypeNode,
-                'stmts' => $returnStatement ? [$returnStatement] : ($this->isAbstract ? null : []),
+                'stmts' => $methodStatements,
             ]
         );
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($method);

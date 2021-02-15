@@ -8,5 +8,5 @@ namespace Tests\Crmplease\Coder\fixtures;
  */
 class BarClass
 {
-    public const TEST = 'bar value';
+    public const TEST = 'bar class constant value';
 }

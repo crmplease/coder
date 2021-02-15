@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
+
+namespace Tests\Crmplease\Coder\fixtures\AddToReturnArrayByKey;
+
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
-namespace Tests\Crmplease\Coder\fixtures\AddToReturnArrayByKey;
-
-class SomeClass
+class ReplaceSelfClassConstantClass
 {
     public const SELF_CONSTANT = 'self constant value';
 
@@ -18,7 +20,6 @@ class SomeClass
                     return $param ?: null;
                 },
                 'key1' => 'value1',
-                'key2' => 'value2',
             ],
         ];
     }

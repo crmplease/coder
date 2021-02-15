@@ -13,12 +13,11 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareVarTagValueNode;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\Core\Exception\NotImplementedException;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use function array_merge;
 use function array_slice;
 use function count;
@@ -43,6 +42,7 @@ class AddPropertyToClassRector extends AbstractRector
     private $phpdocHelper;
     private $getPropertyPropertyHelper;
     private $convertToAstHelper;
+    private $phpDocTagRemover;
     private $property = '';
     private $visibility = self::VISIBILITY_PRIVATE;
     private $isStatic = false;
@@ -53,12 +53,14 @@ class AddPropertyToClassRector extends AbstractRector
     public function __construct(
         PhpdocHelper $phpdocHelper,
         GetPropertyPropertyHelper $getPropertyPropertyHelper,
-        ConvertToAstHelper $convertToAstHelper
+        ConvertToAstHelper $convertToAstHelper,
+        PhpDocTagRemover $phpDocTagRemover
     )
     {
         $this->phpdocHelper = $phpdocHelper;
         $this->getPropertyPropertyHelper = $getPropertyPropertyHelper;
         $this->convertToAstHelper = $convertToAstHelper;
+        $this->phpDocTagRemover = $phpDocTagRemover;
     }
 
     /**
@@ -135,9 +137,9 @@ class AddPropertyToClassRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Add protected property "property" with value "defaultValue" with check duplicates', [
+        return new RuleDefinition('Add protected property "property" with value "defaultValue" with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass
@@ -165,7 +167,6 @@ PHP
      *
      * @return Node|null
      * @throws RectorException
-     * @throws NotImplementedException
      */
     public function refactor(Node $node): ?Node
     {
@@ -227,8 +228,8 @@ PHP
                 $propertyPropertyNode->default = $this->convertToAstHelper->simpleValueOrArrayToAst($this->value);
             }
 
-            /** @var PhpDocInfo $phpDocInfo */
-            $phpDocInfo = $propertyNode->getAttribute(AttributeKey::PHP_DOC_INFO);
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyNode);
+
             $varTagValueNode = $phpDocInfo->getVarTagValueNode();
             if ($typePhpDoc) {
                 if ($varTagValueNode) {
@@ -238,8 +239,10 @@ PHP
                     $varTagValueNode = new AttributeAwareVarTagValueNode($typePhpDoc, '', $this->description);
                     $phpDocInfo->addTagValueNode($varTagValueNode);
                 }
+                $phpDocInfo->markAsChanged();
             } elseif ($varTagValueNode !== null) {
-                $phpDocInfo->removeTagValueNodeFromNode($varTagValueNode);
+                $this->phpDocTagRemover->removeByName($phpDocInfo, 'var');
+                $phpDocInfo->markAsChanged();
             }
 
             return $node;
@@ -257,7 +260,8 @@ PHP
         );
 
         if ($typePhpDoc) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($propertyNode);
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyNode);
+            $phpDocInfo->markAsChanged();
             $varTagValueNode = new AttributeAwareVarTagValueNode($typePhpDoc, '', $this->description);
             $phpDocInfo->addTagValueNode($varTagValueNode);
         }

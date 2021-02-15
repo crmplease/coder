@@ -8,7 +8,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType;
-use function explode;
 use function get_class;
 use function implode;
 

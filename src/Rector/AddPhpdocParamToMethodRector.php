@@ -11,12 +11,10 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareParamTagValueNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use function ltrim;
 
 /**
@@ -26,6 +24,7 @@ class AddPhpdocParamToMethodRector extends AbstractRector
 {
     private $phpdocHelper;
     private $checkMethodHelper;
+    private $phpDocTagRemover;
     private $method = '';
     private $parameter = '';
     private $parameterType = '';
@@ -33,11 +32,13 @@ class AddPhpdocParamToMethodRector extends AbstractRector
 
     public function __construct(
         PhpdocHelper $phpDocHelper,
-        CheckMethodHelper $checkMethodHelper
+        CheckMethodHelper $checkMethodHelper,
+        PhpDocTagRemover $phpDocTagRemover
     )
     {
         $this->phpdocHelper = $phpDocHelper;
         $this->checkMethodHelper = $checkMethodHelper;
+        $this->phpDocTagRemover = $phpDocTagRemover;
     }
 
     /**
@@ -84,9 +85,9 @@ class AddPhpdocParamToMethodRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Add to phpdoc @param parameter "parameter2" with type "string" and description "description" to method "foo" with check duplicates', [
+        return new RuleDefinition('Add to phpdoc @param parameter "parameter2" with type "string" and description "description" to method "foo" with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass
@@ -124,7 +125,6 @@ PHP
      *
      * @return Node|null
      * @throws RectorException
-     * @throws ShouldNotHappenException
      */
     public function refactor(Node $node): ?Node
     {
@@ -156,8 +156,8 @@ PHP
         $typeTagNode = $this->phpdocHelper->createTypeTagNodeByString($parameterType);
         $parameterTagNode = $this->createPhpDocParamNode($typeTagNode, $parameterNode, $this->description);
 
-        /** @var PhpDocInfo $phpDocInfo */
-        $phpDocInfo = $node->getAttribute(AttributeKey::PHP_DOC_INFO);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocInfo->markAsChanged();
 
         $paramTagNodes = $phpDocInfo->getTagsByName('param');
         foreach ($paramTagNodes as $paramTagNode) {
@@ -166,7 +166,7 @@ PHP
             if (ltrim($value->parameterName, '$') !== $this->parameter) {
                 continue;
             }
-            $phpDocInfo->removeTagValueNodeFromNode($paramTagNode->value);
+            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $paramTagNode->value);
             break;
         }
 
@@ -181,7 +181,6 @@ PHP
             $parameterNode->variadic,
             '$' . $this->getName($parameterNode),
             $description,
-            $parameterNode->byRef
         );
 
         return new AttributeAwarePhpDocTagNode('@param', $paramTagValueNode);

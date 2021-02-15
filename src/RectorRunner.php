@@ -5,9 +5,7 @@ namespace Crmplease\Coder;
 
 use Crmplease\Coder\Rector\RectorException;
 use Rector\ChangesReporting\Application\ErrorAndDiffCollector;
-use Rector\ChangesReporting\Collector\AffectedFilesCollector;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
-use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Application\RectorApplication;
 use Rector\Core\Application\TokensByFilePathStorage;
 use Rector\Core\Configuration\Configuration;
@@ -15,8 +13,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\PhpParser\Parser\Parser;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Testing\Application\EnabledRectorsProvider;
-use Rector\NodeTypeResolver\FileSystem\CurrentFileInfoProvider;
+use Rector\Testing\Application\EnabledRectorClassProvider;
 use Symplify\PackageBuilder\Parameter\ParameterProvider;
 use Symplify\PackageBuilder\Reflection\PrivatesAccessor;
 use Symplify\SmartFileSystem\Exception\FileNotFoundException;
@@ -30,6 +27,7 @@ use const PHP_EOL;
  * @author Mougrim <rinat@mougrim.ru>
  * Based on \Rector\Core\Console\Command\ProcessCommand::execute
  * @see \Rector\Core\Console\Command\ProcessCommand::execute
+ * @see https://github.com/rectorphp/rector/blob/0.9.28/src/Console/Command/ProcessCommand.php
  */
 class RectorRunner
 {
@@ -38,10 +36,7 @@ class RectorRunner
     private $config;
     private $parameterProvider;
     private $errorAndDiffCollector;
-    private $enabledRectorsProvider;
-    private $affectedFilesCollector;
-    private $removedAndAddedFilesCollector;
-    private $currentFileInfoProvider;
+    private $enabledRectorClassProvider;
     private $tokensByFilePathStorage;
     private $outputFormatterCollector;
     private $parser;
@@ -53,10 +48,7 @@ class RectorRunner
         Config $config,
         ParameterProvider $parameterProvider,
         ErrorAndDiffCollector $errorAndDiffCollector,
-        EnabledRectorsProvider $enabledRectorsProvider,
-        AffectedFilesCollector $affectedFilesCollector,
-        RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
-        CurrentFileInfoProvider $currentFileInfoProvider,
+        EnabledRectorClassProvider $enabledRectorClassProvider,
         TokensByFilePathStorage $tokensByFilePathStorage,
         OutputFormatterCollector $outputFormatterCollector,
         Parser $parser
@@ -67,10 +59,7 @@ class RectorRunner
         $this->config = $config;
         $this->parameterProvider = $parameterProvider;
         $this->errorAndDiffCollector = $errorAndDiffCollector;
-        $this->enabledRectorsProvider = $enabledRectorsProvider;
-        $this->affectedFilesCollector = $affectedFilesCollector;
-        $this->removedAndAddedFilesCollector = $removedAndAddedFilesCollector;
-        $this->currentFileInfoProvider = $currentFileInfoProvider;
+        $this->enabledRectorClassProvider = $enabledRectorClassProvider;
         $this->tokensByFilePathStorage = $tokensByFilePathStorage;
         $this->outputFormatterCollector = $outputFormatterCollector;
         $this->parser = $parser;
@@ -93,13 +82,12 @@ class RectorRunner
                 [],
                 [
                     Option::OPTION_NO_PROGRESS_BAR => !$this->config->doShowProgressBar(),
-                    Option::OPTION_ONLY => get_class($rector),
                 ],
             ));
 
         $phpFileInfos = [$smartFileInfo];
 
-        $this->enabledRectorsProvider->reset();
+        $this->enabledRectorClassProvider->setEnabledRectorClass(get_class($rector));
         $previousAutoImport = $this->parameterProvider->provideParameter(Option::AUTO_IMPORT_NAMES);
         $shouldAutoImport = $this->shouldAutoImport($smartFileInfo);
         if ($shouldAutoImport !== null) {
@@ -121,6 +109,7 @@ class RectorRunner
 
         $errors = $this->errorAndDiffCollector->getErrors();
 
+        $this->enabledRectorClassProvider->reset();
         // workaround clear errorAndDiffCollector
         $this->privatesAccessor->setPrivateProperty($this->errorAndDiffCollector, 'errors', []);
         $this->privatesAccessor->setPrivateProperty($this->errorAndDiffCollector, 'fileDiffs', []);

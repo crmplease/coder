@@ -6,8 +6,8 @@ namespace Crmplease\Coder\Rector;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use function count;
 
 /**
@@ -28,9 +28,9 @@ class RemoveTraitFromClassRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Remove trait "\Some\MyTrait" from class', [
+        return new RuleDefinition('Remove trait "\Some\MyTrait" from class', [
             new CodeSample(
                 <<<'PHP'
 use Some\MyTrait;

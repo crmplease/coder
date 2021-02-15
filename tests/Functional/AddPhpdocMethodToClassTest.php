@@ -132,11 +132,17 @@ class AddPhpdocMethodToClassTest extends FunctionalTestCase
                     '\\' . FooClass::class,
                     true,
                     [
-                        new PhpdocMethodParameter('parameter1', 'int', true, 0),
-                        new PhpdocMethodParameter('parameter2', 'string', true, ''),
-                        new PhpdocMethodParameter('parameter3', '?\\' . BarClass::class, true, null),
-                        new PhpdocMethodParameter('parameter4', 'string', true, new Constant('\\' . FooClass::class . '::TEST')),
-                        new PhpdocMethodParameter('parameter5', 'float', true, new Code('3.14')),
+                        new PhpdocMethodParameter('parameter0', 'bool', true, true),
+                        new PhpdocMethodParameter('parameter1', 'bool', true, false),
+                        new PhpdocMethodParameter('parameter2', 'int', true, 0),
+                        new PhpdocMethodParameter('parameter3', 'string', true, ''),
+                        new PhpdocMethodParameter('parameter4', '?\\' . BarClass::class, true, null),
+                        new PhpdocMethodParameter('parameter5', 'string', true, new Constant('\\' . FooClass::class . '::TEST')),
+                        new PhpdocMethodParameter('parameter6', 'string', true, new Constant('\Tests\Crmplease\Coder\fixtures\FOO_TEST')),
+                        new PhpdocMethodParameter('parameter7', 'float', true, 3.14),
+                        // if you have problem with float converting
+                        new PhpdocMethodParameter('parameter8', 'float', true, new Code('3.14')),
+                        new PhpdocMethodParameter('parameter9', 'array', true, [1, 3 => 2, 'key' => 'value']),
                     ],
                     'description method 3'
                 ),

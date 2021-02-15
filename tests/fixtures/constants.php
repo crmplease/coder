@@ -6,7 +6,5 @@ namespace Tests\Crmplease\Coder\fixtures;
 /**
  * @author Mougrim <rinat@mougrim.ru>
  */
-class FooClass
-{
-    public const TEST = 'foo class constant value';
-}
+const FOO_TEST = 'foo constant value';
+const BAR_TEST = 'bar constant value';

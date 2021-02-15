@@ -8,8 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use function ltrim;
 
 /**
@@ -35,9 +35,9 @@ class ChangeClassParentRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Change class parent to "\Some\ParentClass" class', [
+        return new RuleDefinition('Change class parent to "\Some\ParentClass" class', [
             new CodeSample(
                 <<<'PHP'
 class SomeClass

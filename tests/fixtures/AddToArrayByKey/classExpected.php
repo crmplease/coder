@@ -18,5 +18,6 @@ return [
     },
     FOO_TEST => 'foo constant',
     FooClass::class => 'foo class',
-    FooClass::TEST => 'foo class constant replaced',
+    FooClass::TEST => 'foo class constant',
+    \Tests\Crmplease\Coder\fixtures\BarClass::class => 'bar class',
 ];

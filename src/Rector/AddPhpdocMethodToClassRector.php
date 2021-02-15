@@ -12,13 +12,11 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueParameterNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareInvalidTagValueNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwareMethodTagValueNode;
 use Rector\AttributeAwarePhpDoc\Ast\PhpDoc\AttributeAwarePhpDocTagNode;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\RectorDefinition\CodeSample;
-use Rector\Core\RectorDefinition\RectorDefinition;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use function get_class;
 
 /**
@@ -65,7 +63,7 @@ class AddPhpdocMethodToClassRector extends AbstractRector
      *
      * @return $this
      */
-    public function setReturnType(?string $returnType): self
+    public function setReturnType(string $returnType): self
     {
         $this->returnType = $returnType;
         return $this;
@@ -105,9 +103,9 @@ class AddPhpdocMethodToClassRector extends AbstractRector
         return $this;
     }
 
-    public function getDefinition(): RectorDefinition
+    public function getRuleDefinition(): RuleDefinition
     {
-        return new RectorDefinition('Add to phpdoc @method method "method2" with return type "string" and description "description" to class with check duplicates', [
+        return new RuleDefinition('Add to phpdoc @method method "method2" with return type "string" and description "description" to class with check duplicates', [
             new CodeSample(
                 <<<'PHP'
 /**
@@ -168,8 +166,9 @@ PHP
             );
         }
 
-        /** @var PhpDocInfo $phpDocInfo */
-        $phpDocInfo = $node->getAttribute(AttributeKey::PHP_DOC_INFO);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocInfo->markAsChanged();
+
         $methodTagNodes = $phpDocInfo->getTagsByName('method');
         foreach ($methodTagNodes as $methodTagNode) {
             $value = $methodTagNode->value;
