@@ -7,16 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2021-02-15
+
 ### Added
 - Add new tests
 
 ### Changed
-- Update dependency rector/rector from ^0.8.56 to ^0.9.28
-- Update dependency phpstan/phpdoc-parser from ^0.4.9 to ^0.4.10
-- Update dependency symplify/set-config-resolver from ^8.3 to ^9.1
-- Update dependency symplify/smart-file-system from ^8.3 to ^9.1
-- Update dependency symplify/package-builder from ^8.3 to ^9.1
-- Update dev dependency phpunit/phpunit from ^9.4.3 to ^9.5
+- Update dependency rector/rector from ^0.8.56 to ^0.9.28 ([#41](https://github.com/crmplease/coder/pull/41))
+- Update dependency phpstan/phpdoc-parser from ^0.4.9 to ^0.4.10 ([#41](https://github.com/crmplease/coder/pull/41))
+- Update dependency symplify/set-config-resolver from ^8.3 to ^9.1 ([#41](https://github.com/crmplease/coder/pull/41))
+- Update dependency symplify/smart-file-system from ^8.3 to ^9.1 ([#41](https://github.com/crmplease/coder/pull/41))
+- Update dependency symplify/package-builder from ^8.3 to ^9.1 ([#41](https://github.com/crmplease/coder/pull/41))
+- Update dev dependency phpunit/phpunit from ^9.4.3 to ^9.5 ([#41](https://github.com/crmplease/coder/pull/41))
 
 ## [0.2.0] - 2020-12-02
 
@@ -57,7 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix convert constant to ast when auto import classes is enabled ([#29](https://github.com/crmplease/coder/pull/29)).
 - Remove using global argv in [`RectorContainerConfigurator`](src/RectorContainerConfigurator.php) ([#34](https://github.com/crmplease/coder/pull/34)).
 
-[unreleased]: https://github.com/crmplease/coder/compare/0.2.0...HEAD
+[unreleased]: https://github.com/crmplease/coder/compare/0.3.0...HEAD
+[0.3.0]: https://github.com/crmplease/coder/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/crmplease/coder/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/crmplease/coder/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/crmplease/coder/compare/0.0.1...0.1.0
